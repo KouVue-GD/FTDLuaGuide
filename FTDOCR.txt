@@ -1,0 +1,1964 @@
+The Basics
+The basic code file needs a function called Update that takes an input called I It should Iook like this-
+function Update(I)
+put your
+code here
+end
+'Tis the interface to the game and contains all the function calls you see on these help pages
+The code in Update will be executed every single physics step (the game runs at 40 physics steps per in game second of time)
+creates a comment line so the line
+put your code here' is never executed by the game_
+Comments are for explaining how your code functions:
+Here is a simple example of a function that uses one of the interface functions to write 'Hello' to the HUD
+function Update(I)
+I:Log( 'Hello
+end
+LUA Syntax
+String Concatenation
+String Concatenation is done with
+i.e 'Hello'
+Player
+creates 'Hello Player'. Numbers are automatically converted to strings
+For loops
+For loops (in this example looping from 0 to 10 in increments of 1) use:
+your
+code here (note that
+we
+don
+need
+to define the step size 0f
+1 is the default anyway)
+end
+Calling functions
+The colon (:) is used for calling functions. This is why all calls to the interface start with I:
+(i.e: I:RequestWaterForwards(5))
+Comments
+creates a comment: So this line, in LUA
+would be a comment
+Global variables
+Declare a variable outside of your
+Update function and it will be persistent from call to call, the example below will
+the counter to the
+forever (1,2,3,4,5,etc).
+count
+function MyUpdateFunction()
+count
+count
+I:Log(count) ;
+end
+If Statements
+To conditionally execute some code YOu can use an if statement: In this example we only execute the line if 'a' is greater than 0.
+if
+a>0 then
+your code here
+end
+log
+Log
+Logging and Messages
+ILog(message)
+Inputs: message: [string] the message you want to write tO the log:
+Outputs
+a message t0 the
+is visible when editing the LUA box and appears in the 'Errors
+Log' panel: The last 100 log messages are
+IclearLogso
+Inputs: NIA
+Outputs: NIA
+Clears your log: Pretty harmlessi
+ILogToHud(message)
+Outputs: NIA
+your clipboard
+Writes a message t0 the HUD: HUD messages are visible during normal play and when on the map:
+log:
+Log
+Libraries
+Mathf
+Vector3
+Unity's Vector3 library is full exposed to You: You can create a new Vector3 with V = Vector3(x,Y,2), and call functions such as Vector3.Angle(v1,v2). Google Unity Vector3 for
+more information on this library
+Quaternion
+Unity's Quaternion library is fully exposed to You also. Google it to find out more
+Fleet
+The Fleet Awareness API provides scripts basic information about the fleet the craft is in:
+IFleetIndex (read only)
+Outputs: [int] Position of the ship in the fleet starting from 0.
+Returns the index of the ship in the fleet:
+Starts at 0
+LFleet (read only)
+Outputs: [FleetInfo] Information about the fleet
+Returns the current state of the fleet:
+LIsFlagship (read only)
+Outputs: [bool] Is the craft the fleet flagship?
+Used to determine whether the ship is a flagship of a fleet:
+FleetInfo
+ID [int] Unique ID of the fleet
+Name [string] Name of the fleet
+Flagship: [Friendlylnfo] Information about the flagship of the fleet
+Members: [FriendlyInfollJ] A table of information regarding the fleets members:
+MAY CONTAIN NILS!
+Resources
+Scripts can use the following fields to get information about known resource zones:
+May change in the future to require a detector
+LResourcezones (read only)
+Outputs: [ResourceZoneInfo[]] List of Resourcezones
+Returns a Lua table containing a list of known resource zones:
+LResources (read only)
+Outputs: [ResourceInfo] Ship resource data
+Returns information about a ship's available resources:
+Resourcezoneinfo
+Id [int]: Unique ID of the Resource Zone
+Name [string]: Name of the Resource Zone
+Position [Vector3]: Position of the Resource Zone
+Radius [float]: Radius of the Resource Zone
+Resources [ResourceInfo]: Available resources of the Resource Zone
+ResourceInfo
+CrystalTotal [float]: Total Crystal resources:
+crystalMax [float]: Max Crystal resources:
+MetalTotal [float]: Total Metal resources.
+MetalMax [float]: Max Metal resources:
+NaturalTotal [float]: Total Natural resources:
+NaturalMax [float]: Max Natural resources.
+OilTotal [float]: Total Oil resources:
+OilMax [float]: Max Oil resources.
+ScrapTotal [float]: Total Scrap resources:
+ScrapMax Ifloat]: Max Scrap resources:
+AI
+IGetAIMovementMode(index)
+Inputs: index: [int] index of the Al mainframe
+returns the movement mode of the Al mainframe specified by the index
+FGetAIFiringMode(index)
+Inputs: index: [int] index of the AI mainframe
+Outputs: [string] firing mode of the AI mainframe. Possible modes: Off; On
+returns the firing mode of the Al mainframe specified by the index
+IAIMode
+Obsolete; please
+'GetAIMovementMode" instedd (read only)
+Outputs: [string] Returns the mode of the AI
+Possible modes: off; on
+Returns the mode of the Al mainframe
+IConstructType
+obsolete
+Outputs: [string] The type of construct
+Al's concept of what type of craft this ship is
+Posible types: none
+Using Propulsion
+ITellAiThatWeAreTakingControl()
+Inputs:
+Outputs:
+Will stop the AI from issuing propulsion commands for the next second; after which it will assume control again: This is exactly what happens
+TAddPropulsionRequest(type
+drive)
+Inputs: type: Main
+0, Secondary
+1, Tertiary = 2 
+Roll = 3, Pitch
+drive: [float] the amount to add to the axis
+Outputs: NIA
+Adds
+propulsion request to the specified axis: This is additive to any other requests made to the axis in the same frame and is clamped
+between
+Tand
+ISetPropulsionRequest(type; drive)
+Inputs: type: Main
+0, Secondary
+1, Tertiary = 2
+drive: [float] the amount the axis is set to
+Outputs:
+NIA
+sets the propulsion request to the specified axis. This overwrites
+other requests made to the axis in the same frame and is clamped
+GetPropulsionRequest(type)
+Inputs: type: Main
+0, Secondary = 1, Tertiary = 2
+Roll = 3, Pitch = 4, Yaw = 5, Forwards
+Outputs: NIA
+Gets the sum of all requests made t0 the
+specified axis in the previous frame or reads the value that the drive is set to if the type is Main;
+Secondary or Tertiary
+IRequest ComplexController Stimulus(stim)
+Outputs: NIA
+Requests a stimuli as
+the complex controller block
+IMoveFortress
+Inputs: direction [Vector3]:  Direction t0 move the fortress in:
+Limited to 1 meter.
+Outputs: NIA
+Move fortress in any direction:  Limited t0 1 meter
+IRequest CustomAxis(axisName;drive)
+Inputs: axisName [string]: name of axis t0 createluse. Limited t0 32 characters
+drive [float]: value to add to the axis on this frame:
+Outputs: NIA
+32 characters:
+any
+per
+Using Propulsion
+when the player presses a control key on an Al controlled vehicle:
+FAddPropulsionRequest(type; drive)
+Inputs: type: Main
+0, Secondary = 1, Tertiary = 2 , Roll = 3, Pitch
+drive: [float] the amount to add to the axis
+Outputs: NIA
+Adds
+propulsion request to the specified axis: This is additive to any other requests made to the axis in the same frame and is clamped
+between
+Tand
+ISetPropulsionRequest(type; drive)
+Inputs: type: Main
+0, Secondary = 1, Tertiary = 2
+Roll = 3, Pitch = 4, Yaw = 5, Forwards
+6, Up = 7, Right = 8 A = 9 B = 10, C = 11, D = 12, E = 13]
+drive: [float] the amount the axis is set to
+Outputs_
+NIA
+Sets the propulsion request to the specified axis This overwrites any other requests made to the axis in the same frame and is clamped
+GetPropulsionRequest(type)
+Inputs: type: Main
+Outputs: NIA
+Gets the sum of all requests made to the
+specified axis in the previous frame or reads the value that the drive is set to if the type is Main;
+Secondary or Tertiary
+IRequest ComplexController Stimulus(stim)
+Click to copy the function call to
+Outputs: NIA
+your clipboard
+Requests a stimuli as
+the complex controller block
+IMoveFortress
+Inputs: direction [Vector3]:  Direction t0 move the fortress in:
+Limited to 1 meter.
+Outputs: NIA
+Move fortress in any direction:  Limited t0 1 meter
+IRequest CustomAxis(axisName;drive)
+Inputs: axisName [string]: name of axis to createluse. Limited tO 32 characters
+drive [float]: value to add to the axis on this frame:
+Outputs: NIA
+creates or uses an axis with a custom name: Adds a value t0 the axis. Axes values are limited t0 between
+1 and 1. Axes names are limited to
+32 characters:
+IGet CustomAxis(axisName)
+Inputs: axisName [string]: name of axis t0 get value for.
+Outputs: The value of the axis as a float 0 if axis not created yet
+per
+Accessing Target Info
+IGetNumber OfMainframes()
+Inputs: NIA
+Outputs: The number of mainframes on your vehicle.
+The mainframe count of your vehicle is useful for requesting targets 
+IGetNumberOfTargets(mainframeIndex)
+Outputs: The number of targets In this particular mainframe
+Returns 0 if such a mainframe does not exist
+The tare
+count is important when calling GetTarget(mainframelndex; targetIndex)
+IGet TargetInfo(mainframeIndex; targetIndex)
+Inputs: mainframeIndex: 0 being the first mainframe: Use GetNumberOfMainframes() to find out how many there are:
+targetIndex: 0 being the first target. If target prioritisation card is in use 0 is the highest priority target
+Outputs
+died but the AI has not yet
+TargetInfo
+Valid: [bool] true if a target was correctly returned
+Priority: [int] 0 is highest priority
+Score: [float] high is @ good score- taken from target prioritisation card
+AimPointPosition: [Vector3] position in game world of aim
+(this Is the current position of the block that's
+aimed for)
+Team: [Int] team of target
+Protected: [bool] is it salvage? Will be false for salvage:
+Position: [Vector3] position in game world of target object
+Velocity: [Vector 3] velocity in game world in meters per second
+PlayerTargetchoice: [bool] has the player set this as the target?
+Id: [int] the unique integer Id of the target
+IGet TargetPositionInfo(mainframeIndex, targetIndex)
+Inputs: mainframeIndex: 0 being the first mainframe: Use GetNumberOfMainframes() to find out how many there are:
+targetIndex: 0 being the first target. If target prioritisation card is in use 0 is the highest priority target
+Outputs: A TargetPositionInfo object
+The TargetPositioninfo object contains many interesting variables relating to the target: Valid will be false if the target has died but the Al has
+not yet cleared it;
+IGetTargetPositionInfoForPosition(mainframeIndex; Xy,2)
+Inputs: mainframelndex: [int] 0 being the first mainframe
+Use GetNumber OfMainframes() to find out how many there are:
+X: [float] east west in meters.
+y: [float] up down in meters (0 is sea Ievel):
+2: north south in meters.
+get
+being
+point
+Accessing Target Info
+Valid will be Talse if the target has died but the Alhas not
+TargetInfo
+Valid: [bool] true if a target was correctly returned
+Priority: [int] 0 is highest priority
+Score: [float] high is a good score-taken from target prioritisation card
+AimPointPosition: [Vector 3] position in game world of aim point (this iS the current position of the block thats being aimed for)
+Team: [int] team of target
+Protected: [bool] is it salvage? Will be false for salvage.
+Position: [Vector3] position in game worId of target object
+Velocity: [Vector 3] velocity in game world in meters per second
+Player Targetchoice: [bool] has the player set this as the target?
+Id: [int] the unique integer Id of the target
+KGetTargetPositionInfo(mainframeIndex; targetIndex)
+Inputs: mainframelndex: 0 being the first mainframe: Use GetNumberOfMainframes() to find out how many there are:
+targetIndex:
+being the first target If target prioritisation card is in use 0 is the highest priority target
+Outputs: A TargetPositionInfo object
+The TargetPositionInfo object contains many interesting variables relating to the target: Valid Will be false if the target has died but the Al has
+not yet cleared it:
+Inputs: mainframeIndex: [int] 0 being the first mainframe
+Use GetNumber OfMainframes() to find out how many there are:
+X: [float] east west in meters:
+y: [float] up down in meters (0 is sea level):
+2: north south in meters:
+Outputs: A TargetPositionInfo object for this point in space: Velocity
+be 0.
+The TargetPositionInfo object contains many interesting variables relating to the target:
+TargetPositionInfo
+Valid: [bool] true if target position info correctly returned:
+Azimuth: [float] degrees off nose of our vehicle where positive Is clockwise
+Elevation: [float] degrees off nose of our vehicle where positive Is downwards. This often has dodgy values
+ElevationForAltitudeComponentOnly: [float] the elevation off nose of the targets altitude: Robustly calculated
+Range: [float] the range to the target
+Direction: [Vector 3] the direction to the target (absolute, not normalised)
+GroundDistance: [float] the distance
+the ground (ignoring vertical component) to the target
+AltitudeAboveSeaLevel: [float] in metres.
+Position: [Vector 3] position of target
+yet
+will
+along
+Misc Functions
+Inputs: X: [float] game world east west position in meters.
+y: [float] game world vertical (not important)
+game world north south position in meters.
+Outputs: [float] the terrain altitude in meters where 0 is sea Ievel.
+IGetTerrainAltitudeForLocalPosition(x,y,2)
+Inputs: X [float] right offset from construct position in meters:
+y: [float] up offset from construct position in meters
+forwards offset from construct position in meters:
+Outputs: [float] the terrain altitude In meters where 0 Is sea Ievel.
+Returns altitude of the terrain at a position relative to the construct: Can be overloaded with a single Vector 3 rather than XY.z components
+IGetGravityForAltitude(alt)
+Inputs: alt: [float] altitude (0 is sea level)
+Outputs: [Vector3] gravity vector
+Returns gravity vector for an altitude: gravity Y is the component of interest:
+IGet Timel)
+Inputs: NIA
+Outputs: [float] the time in seconds:
+Returns time with an arbitrary offset (i.e: the time will seldom be 0).
+IGetTime SinceSpawn()
+Inputs: NIA
+Outputs: [float] the time in seconds since the construct spawned:
+Returns time since construct spawned in seconds
+Inputs: NIA
+Outputs: [float] The time since the Instance started in seconds:
+Returns time since the instance started in seconds::
+GetWindDirectionAndMagnituded
+Inputs: NIA
+Outputs: [Vector 3] Vector representing the direction and the magnitude of the wind:
+Get the direction and magnitude of the current wind
+Self awareness
+Inputs: NIA
+Outputs: [Vector3] The position (Vector3 has members X Y; and z).
+Returns the position of the construct: The construct'$ position is essentially the position of the first ever block placed; or the centre of the
+starting raft that it was built from
+IGetConstructForwardVectord
+Inputs:
+Outputs: [Vector 3] The forward pointing vector of the construct (it has length 1)
+Return the forward pointing vector of the construct
+FGetConstructRightVector()
+Inputs: NIA
+Outputs: [Vector3] The right pointing vector of the construct (it has length 1)
+Return the right pointing vector of the construct
+Inputs: NIA
+Outputs: [Vector 3] The up pointing vector of the construct (it has length 1)
+Return the up pointing vector of the construct
+IGetConstructMaxDimensions()
+Inputs: NIA
+Outputs: [Vector 3] The size of the vehicle right up and forwards of its origin
+This minus GetConstructMinDimensions() provides the full size of the vehicle
+IGetConstructMinDimensions()
+Inputs: NIA
+Outputs: [Vector3] The size of the vehicle Ieft; down and back of its origin
+Returns the 'negative' size of the vehicle (left down back) relative to its origin (GetConstructPosition()): The coordinates are in local space:
+IGetConstructRoll()
+Inputs: NZA
+Outputs: [float] The roll angle in degrees
+Return the roll angle in degrees
+IGetConstructPitchu)
+Inputs: NIA
+Outputs: [float] The pitch angle In degrees
+Return the pitch angle in degrees
+IGet ConstructYaw()
+NIA
+Self awareness
+FGet ConstructYaw()
+Outputs: [float] The yaw angle in degrees
+Return the yaw angle in degrees
+Inputs: NIA
+Outputs: [Vector3] The position (Vector3 has members X Y; and z):
+Returns the position of the construct'$ centre f mass in the world
+IGet ConstructLocalCenterOfMasst)
+Inputs: NIA
+Outputs: [Vector 3] The local position (Vector3 has members X Y; and 2).
+Returns the position of the construct's centre of mass in the vehicle: It is typically rounded to SOcm increments t0 make balancing more
+achievable
+but this can be changed in the 'V' menu:
+IGetAiPosition(mainframeIndex)
+Inputs: mainframeindex: [int] 0 is the first mainframe:
+Outputs: [Vector 3] The position (Vector3 has members X Y; and 2).
+FGetVelocityMagnitude()
+Inputs:
+Outputs: [float] magnitude of your velocity in meters
+second:
+Returns the magnitude of your velocity in meters per second:
+GetForwardsVelocityMagnituded)
+Outputs:
+I
+reteras Berasecondh in meters per second: A negative value means youre going predominently
+ac
+FGetVelocityVector()
+Inputs: NIA
+Outputs: [Vector3] Your construct$ velocity vector In meters per second
+Returns your construct'S velocity vector in world space in meters per second
+IGetVelocityVectorNormalized()
+Inputs: NIA
+Returns your construct's velocity vector in world space in meters per second:
+to have a length of
+IGetAngularVelocity()
+per
+Self awareness
+Inputs: NIA
+Outputs: [Vector 3] Your constructs angular velocity in world space
+Returns your
+angular velocity. X is speed of turn around the east->west axis; Y is around the vertical axis and 2 is around the north south axis:
+GetLocalAngularVelocityu)
+Inputs: NIA
+Outputs: [Vector3] Your construct's
+angular velocity in Iocal space
+Returns your angular velocity X is pitch Y yaw and z roll_
+Inputs: NIA
+Outputs: [float] fraction: 0 to
+1. 1 If no ammo storage is available
+Returns the fraction of ammo your construct has left
+GetFuelFractiono
+Outputs: [float] fraction: 0 to 1.
+1 if no fuel storage is available
+Returns the fraction of fuel your construct has left
+Inputs: NIA
+Outputs: [float] fraction: 0 to 1. 1 if no spares storage is available
+Returns the fraction of spares your construct has left
+Inputs: NIA
+Outputs: [float] fraction:
+Returns the fraction of energy your construct has left
+IGetPowerFractiono
+Inputs: NIA
+Outputs: [float] fraction: 0 to
+Returns the fraction of power your construct has left
+IGetElectricPowerFraction()
+Inputs: NIA
+Outputs: [float] fraction: 0 to
+Returns the fraction of electric power your construct has left
+IGetHealthFraction)
+Inputs: NIA
+Self awareness
+FGet SparesFractiont)
+Inputs: NIA
+Outputs: [float] fraction: 0 to 1. 1 if no spares storage is available
+Returns the fraction of spares your construct has left
+FGetEnergyFraction)
+Inputs: NIA
+Outputs: [float] fraction: 0 to 1. 1 If no batteries are avallable
+Returns the fraction of energy your construct has left
+IGetPowerFractiont)
+Inputs: NIA
+Outputs: [float] fraction:
+Returns the fraction of power your construct has left
+GetElectricPowerFractiono
+Inputs: NZA
+Outputs: [float] fraction: 0 to
+Returns the fraction of electric power your construct has left
+TGetHealthFractiont)
+Inputs: NIA
+Outputs: [float] fraction: 0 to 1. 1 If full health
+Returns the fraction of health your construct has (including turrets etc)
+TIsDockedo)
+Inputs: NIA
+Outputs: [bool] Docked? true for yes:
+Returns true if the vehicle is docked
+GetHealthFractionDifference(time)
+Inputs: timelfloat]: the time you want the difference measured over. Time Will be limited to be between 1 and 30.
+Outputs: [float] health difference as a fraction (0 to 1)
+Returns health difference over a specified measurement time
+Inputs: NIA
+Outputs: [string] name of the bluepritn:
+Returns the the name of this blueprint.
+Get UniqueId()
+Inputs: NIA
+Outputs: [int] the unique id.
+Components
+Types
+Component types and their logic:
+0 = balloon
+deployer
+bool 0
+Get whether the balloon Is deployed
+set
+True to deploy the balloon: False to sever the balloon:
+1 = drive maintainer
+int 0
+getlset
+Get/set the channel of the drive mainainer (0 = Primary;
+Secondary;
+2 =
+Tertiary):
+float 0
+Getset the drive that the drive maintainer is set tO_
+2 = all pumps (helium and air)
+bool 0
+get
+Get whether the pump Is on (buoyancy fraction
+0).
+set
+False sets buoyance fraction to 0. True sets buoyancy fraction to 1.
+float 0
+getlset
+Get/set buoyancy fraction:
+float 1
+Get fraction of volume that is flooded:
+3=resource
+gatherer
+bool 0
+getlset
+On/off:
+drill:
+bool 0
+getlset
+On/off:
+5 = ammo processor
+bool 0
+getlset
+Onfoff:
+6 = fuel refinery:
+bool 0
+getlset
+On/off:
+float 0
+Get dangerous gas Ievel.
+float 1
+get
+Get refining efficiency:
+float 2
+Get time per batch:
+7 = tractor beams
+bool 0
+getlset
+On/off:
+Int 0
+Get the unique id of the selected vehicle: -1 if nothing is selected:
+set
+Select the vehicle with the specified unique id.
+float 0
+getlset
+Get/set hold distance:
+float 1
+Get/set hold azimuth:
+float 2
+getlset
+Get/set hold elevation:
+8 = hydrofoils
+float 0
+9 =
+propulsion 
+float 0
+Getlset drive fraction:
+float 1
+Get propulsion requests to this component s0 far this frame:
+get
+get
+oil
+get
+get
+get
+get
+Components
+float 0
+getlset
+Get/set angle
+9 =
+propulsion 
+float 0
+getlset
+Getlset drive fraction:
+float 1
+get
+Get propulsion requests to this component so far this frame:
+set
+Add a
+propulsion request to this component
+float 2
+Get total propulsion request to this component last frame:
+float 3
+get
+Max force of this component
+10 = shield projector
+bool 0
+get
+Get whether the shield is functioning:
+int 0
+Get/set the shield type (0 = off;
+1= reflect
+2 = disrupt;
+3 = laser absorb):
+float 0
+getlset
+Get/set strength:
+float 1
+Getlset azimuth:
+float 2
+Getlset elevation:
+float 3
+getlset
+Getlset range:
+float 4
+getlset
+Getset width:
+float 5
+getlset
+float 6
+Getlset alpha:
+float 7
+Getlset red:
+float 8
+getlset
+Get/set green:
+float 9
+getlset
+Get/set blue:
+11 = helium pump
+bool 0
+Get whether the airpump is on (buoyancy fraction > 0).
+set
+False sets buoyance fraction to 0. True sets buoyancy fraction to 1.
+float 0
+getlset
+Get/set buoyancy fraction:
+float 1
+Get fraction of volume that Is flooded:
+12 = spotlight
+float 0
+getlset
+Getlset cone angle:
+float 1
+getlset
+Getlset azimuth angle:
+float 2
+getlset
+Get/set elevation angle:
+float 3
+getlset
+Getlset intensity:
+float 4
+float 5
+getlset
+Get/set red:
+float 6
+getlset
+Getlset green:
+float 7
+getlset
+Get/set blue:
+13 = advanced cannon Iaser targetter
+hod
+get
+get
+get
+Components
+13 = advanced cannon laser targetter
+int 0
+get
+Get the weapon index of the firing piece it is attached to: -1 otherwise:
+float 0
+getlset
+float 1
+Get altitude fuse 'Iow' altitude
+set
+Set altitude fuse altitude:
+float 2
+get
+Get altitude fuse 'high' altitude:
+14 = CRAM cannon laser targetter
+int 0
+float 0
+Getlset timed fuse time.
+float 1
+Get altitude fuse 'Iow' altitude.
+set
+Set altitude fuse altitude
+float 2
+Get altitude fuse 'high' altitude.
+15 = warp drive
+bool 0
+Is charging:
+int 0
+set
+0 = start charging;
+float 0
+Right jump distance:
+float 1
+Up jump distance:
+float 2
+get
+Forwards jump distance:
+float 3
+float 4
+Up jump factor:
+float 5
+Forwards jump factor.
+float 6
+Total length of attached chargers:
+float 7
+Charge duration:
+16 = particle cannon lense
+int 0
+get
+Get the weapon Index of the firing piece it is attached to: -1 otherwise:
+17 = steam boiler controller
+float 0
+getlset
+Getlset burn rate.
+float 1
+get
+Volume of attached boiler.
+float 2
+Pressure of attached boiler.
+18 = fuel engine generator
+float 0
+getlset
+Get/set max relative rpm:
+float 1
+getlset
+Get/set battery charge drive:
+float 2
+Current relative rpm:
+float 3
+Estimate of maximum power.
+float 4
+Fuel usage per second:
+19 = sail main block
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+get
+Components
+19 = sail main block
+int 0
+Get the sail type (0 = three point sail,
+1 = square rigged sail):
+float 0
+get
+Mast winch setting:
+set
+Winch mast towards this setting:
+float 1
+Boom winch setting:
+set
+Winch boom towards this setting:
+float 2
+Mast height
+float 3
+get
+Boom length:
+20 = advanced cannon ammo intake
+int 0
+Get unique id of the associated ammo controller: 1 otherwise:
+set
+Select an ammo controller by Its unique id.
+int 1
+Get component index of the associated ammo controller. -1 otherwise.
+set
+Select an ammo controller by Its component index
+int 2
+21 = advanced cannon ammo controller
+int 0
+Get unique Id.
+22 = AI wireless transmitter
+Int 0
+getlset
+Getlset channel:
+23 = AI wireless receiver
+int 0
+getlset
+Get/set channel.
+24  Al aimpoint selection card
+int 0
+getlset
+Getlset aimpoint selection type (0 = random;
+1 = ammo and AI):
+float 0
+getlset
+Getlset retar
+time:
+25 = detection component
+bool 0
+getlset
+Onfoff:
+int 0
+getlset
+AI movement mode (0 = Off;
+1 = Manual
+2 = Automatic,
+3 = Fleet):
+Int 1
+getlset
+AI firing mode (0 = Off,
+1 = On):
+27 = laser colorer
+float 0
+getlset
+float 1
+getlset
+Getlset green:
+float 2
+getlset
+Get/set blue:
+28 = Iaser missile defence
+float 0
+Getlset red:
+float 1
+Getlset green:
+float 2
+getset
+Get/set blue:
+get
+get
+get
+get
+get
+get
+get
+Components
+float 2
+getlset
+Get/set blue_
+29 = particle cannon
+float 0
+getlset
+Get/set red:
+float 1
+getlset
+Getlset green:
+float 2
+Getset blue
+30 = light fitting
+float 0
+Getlset intensity:
+float 1
+getlset
+Get/set range.
+float 2
+getlset
+Getlset
+float 3
+Getlset green:
+float 4
+getlset
+Get/set blue:
+float 0
+getlset
+Get/set red:
+float 1
+getlset
+float 2
+32 = smoke generator
+float 0
+getlset
+Getlset particle speed:
+float 1
+getlset
+Get/set particle size:
+float 2
+getlset
+Getlset
+float 3
+Getlset green:
+float 4
+Get/set blue:
+33 =
+hologram projector
+bool 0
+getlset
+On/off:
+bool
+getlset
+Get/set whether the image Is mirrored.
+float 0
+Getlset width:
+float 1
+Get/set height
+float 2
+getlset
+Getiset distance:
+float 3
+Getlset right translation:
+float 4
+getlset
+Get/set up translation:
+float 5
+Getlset azimuth:
+float 6
+get/set
+Getlset elevation:
+float 7
+getlset
+Get/set rotation:
+34 = poster holder
+float 0
+Get/set width:
+float 1
+getlset
+Getlset height
+red:
+red:
+Components
+gesel
+35 = electric engine
+float 0
+getlset
+Getlset power fraction:
+36 = steam boliler controller
+float 0
+getlset
+Get/set burn rate:
+float 1
+Get storage module pressure.
+37 = air pump
+bool 0
+Get whether the airpump is on (buoyancy fraction > 0).
+set
+False sets buoyance fraction to 0. True sets buoyancy fraction to 1.
+float 0
+Get/set buoyancy fraction:
+float 1
+Get fraction of volume that is flooded:
+BlockInfo
+Valid:[bool] false means this BlockInfo packet is useless
+Position:[Vector3] position in world (east;up,north)
+LocalPosition [Vector 3] position in construct (right,up,forwards)
+LocalPositionRelativeToCom:[Vector 3] lIocal position relative t0 the center of mass
+Forwards:[Vector3] forwards direction in world(east,up,north)
+LocalForwards:[Vector 3] forward direction in construct (right,up,forwards)
+Rotation:[Quaternion] the rotation of the block in world coordinates
+LocalRotation:[Quaternion] the rotation of the block in the vehicle'$ (or turrets) coordinate system.
+SubConstructIdentifier:[int] the sub construct identifier of the subconstruct the block is part of:
+CustomName:[string] the custom name assigned t0 the block
+Interface Functions
+Methods
+IComponent_GetCount(type)
+Outputs: [int] the number of components of this type:
+Returns the number of components of this type
+TComponent_GetLocalPosition(type, index)
+Inputs: type: [int] the type of component you want the Iocal position of:
+index: [int] the index of the component you want the position of:
+Returns the local position in the vehicle of this component:
+IComponent_GetBlockInfo(type,index)
+Inputs: type: [int] the type of component you want information on:
+index: [int] the index of the component you want block info for.
+get
+get
+get
+Components
+Returns the local position in the vehicle of this component:
+IComponent_GetBlockInfo(type,index)
+Inputs: type: [int] the type of component you want information on:
+index: [int] the index of the component you want block info for..
+Outputs: [BlockInfo] @ Blocklnfo structure relating to the component
+Returns an extensive BlockInfo object for the component:
+TComponent_GetBoollogic(type; blockIndex)
+Inputs: type: [int] the type of component you want boolean logic for.
+blockIndex: [int] the index of the component you want boolean logic for.
+Outputs: [bool] the first boolean logic for this component For a component without boolean logic, or a block index that doesnt exist; false Is returned:
+Returns a boolean (truelfalse) for a component: Depending on the type of this component this means different
+(or nothing at all):
+Default return is false:
+Inputs: type: [int] the type of component you want boolean logic for.
+blockIndex: [int] the index of the component you want boolean logic for.
+propertyIndex: [int] the index of the index of the boolean logic you want
+Outputs: [bool] the specified boolean logic for this component For a component without boolean logic,
+or an index that doesnt exist; false is returned:
+Returns a boolean (truelfalse) for a component: Depending on the type of this component this means different things (or nothing at all):
+Default return is false:
+IComponent_SetBoolLogic(type,index;bool)
+Inputs: type: [int] the type of component
+want to set boolean logic for.
+index: [int] the index of the component you want to set boolean logic for.
+bool: [bool] the truelfalse you want to set
+Outputs: N/A
+Sets the first boolean logic for & component
+Depending on the type of this component this means different things (or nothing at all)
+Inputs: type: [int] the type of component you want to set boolean logic for.
+blockIndex: [int] the index of the component you want to set boolean logic for.
+propertyIndex1: [int] the index of the boolean logic you want to set
+bool1: [bool] the truelfalse you want to set
+Outputs: NIA
+Sets the specified boolean logic for a component. Depending on the type of this component this means different things (or nothing at all)
+you
+Components
+Inputs: type: [int] the type of component you want to set boolean logic for.
+blockIndex: [int] the index of the component you want to set boolean logic for.
+propertyIndex : [int] the index of the first boolean logic you want to set
+propertyIndex2: [int] the index of the second boolean logic you want to set
+bool2: [bool] the truelfalse
+want t0 set the second logic to.
+Outputs: NIA
+Sets the two specified boolean logics for
+a component:
+Depending
+on
+the type of this component this means different things (or nothing at all)
+Inputs: type: [int] the type of component you want to set boolean logic for.
+Click to copy the function call to
+blockIndex: [int] the index of the component you want to set boolean logic for.
+your clipboard
+propertyIndexI: [int] the index of the first boolean logic you want to set
+boolt: [bool] the truelfalse you want to set the first logic to.
+propertyIndex2: [int] the index of the second boolean logic you want to set
+bool2: [bool] the truelfalse you want to set the second logic to.
+propertyIndex3: [int] the index of the third boolean logic you want to set
+Outputs: NIA
+sets the three specified boolean logics for a component. Depending on the type of this component this means different things (or nothing at
+FComponent_GetFloatLogic(type; blockIndex)
+Inputs: type: [int] the type of component you want float logic for.
+blockIndex: [int] the index of the component you want float logic for.
+Returns a
+floating point value for a component: Depending on the type of this component this means different things (or nothing at all):
+Default return is 0.
+FComponent_GetFloatLogic_I(type, blockIndex, propertyIndex)
+Inputs: type: [int] the type of component you want float logic for.
+blockIndex: [int] the index of the component you want float logic for.
+propertyIndex: [int] the Index of the index of the float Iogic you want
+Outputs: [float] the specified float logic for this component For 4 component without float logic,
+Returns a
+floating point value for a component: Depending on the type of this component this means different things (or nothing at all)
+Default return is 0.
+IComponent_SetFloatLogic(type,index float)
+you
+Components
+IComponent_SetFloatLogic(type;index float)
+Inputs: type: [int] the type of component you want to set float logic for.
+index: [int] the index of the component you want to set float logic for.
+float: [float] the floating
+value you want to set
+Outputs: N/A
+Sets the first float logic for a component. Depending on the type of this component this means different things (or nothing at all):
+Inputs: type: [int] the type of component you want to set float logic for.
+blockIndex: [int] the index of the component you want to set float logic for.
+propertyIndex1: [int] the index of the float logic
+want t0 set
+floati: [float] the floating
+value you want to set
+Outputs: NIA
+Sets the specified float logic for a component. Depending on the type of this component this means different things (or nothing at all)
+blockIndex: [int] the index of the component you want to set float logic for.
+propertyIndex1: [int] the index of the first float logic you want to set
+float1: [float] the floating point value you want to set the first logic to:
+propertyIndex2: [int] the index of the second float logic You want to set
+floatz: [float] the floating
+value you want t0 set the second
+logic to
+Outputs: N/A
+Sets the two specified float logics for
+component. Depending on the type of this component this means different things (or_nothing at all)
+Inputs: type: [int] the type of component you want to set float logic for.
+blockIndex: [int] the index of the component you want to set float logic for.
+propertyIndex1: [int] the index of the first float logic you want to set
+floati: [float] the floating
+value you want to set the first logic to_
+propertyIndex2: [int] the index of the second float logic you want to set
+floatz: [float] the floating
+'value you want to set the second logic to_
+propertyIndex3: [int] the index of the third float logic you want to set
+float3: [float] the floating point value you want to set the third logic to.
+Sets the three specified float logics for
+component: Depending on the type of this component this means different things (or_nothing at all):
+IComponent_GetIntLogic(type; blockIndex)
+Inputs: type: [int] the type of component you want int logic for.
+blockIndex: Tintl the index of the component Vou want int loaic for
+point
+you
+point
+point
+point
+point
+Components
+Sets the three specified float logics for a component: Depending on the type of this component this means different things (or nothing at all):
+IComponent_GetIntLogic(type; blockIndex)
+Inputs: type: [int] the type of component you want int logic for.
+blockiIndex: [int] the index of the component you want int logic for.
+outputs Rentk the
+thos conpopenerfon
+For
+{ndem
+doeset e
+extst
+returoeding
+at all): Default
+IComponent_GetIntLogic_I(type; blockIndex, propertyIndex)
+Inputs: type: [int] the type of component you want int logic for.
+blockIndex: [int] the index of the component you want int logic for.
+propertyIndex: [int] the index of the index of the int logic you want
+Outputs Kent} thea
+hisrfoppenenbegerafo
+For a
+omnponeet
+on
+type
+nthats
+0 i5
+returoedng
+at all): Default
+IComponent_SetIntLogic(type,index,int)
+Inputs: type: [int] the type of component you want to set int logic for.
+index: [int] the index of the component you want to set int logic for.
+Outputs: NIA
+Sets the first int logic for a component. Depending on the type of this component this means different things (or nothing at all):
+FComponent
+Inputs: type: [int] the type of component you want to set int logic for.
+blockIndex: [int] the index of the component you want to set int logic for.
+propertyIndex1: [int] the index of the int logic you want to set
+intI: [int] the integer number You want to set
+Outputs: NIA
+Sets the specified int logic for a component: Depending on the type of this component this means different things (or nothing at all):
+Inputs: type: [int] the type of component you want to set int logic for.
+blockIndex: [int] the index of the component you want to set int logic for.
+propertyIndex1: [int] the index of the first int logic you want to set
+intI: [int] the integer number You want to set the first logic to:
+propertyIndex2: [int] the index of the second int logic you want to set
+int2: [int] the integer number You want to set the second logic to.
+Outputs: NIA
+Sets the two specified int logics for a component. Depending on the type of this component this means different things (or nothing at all) 
+existhogs
+Components
+Sets the two specified int logics for a component: Depending on the type of this component this means different things (or nothing at all)
+Inputs: type: [int] the type of component you want t0 set int logic for.
+blockIndex: [int] the index of the component you want to set int logic for.
+propertyIndex1: [int] the index of the first int logic You want t0 set
+inti: [int] the integer number you want to set the first logic to.
+propertyIndex2: [int] the index of the second int logic you want to set
+int2: [int] the integer number you want t0 set the second logic to.
+propertyIndex3: [int] the index of the third int logic You want to set
+int3: [int] the integer number you want to set the third logic to.
+Outputs: NIA
+Sets the three specified int logics for a component. Depending on the type of this component this means different things (or nothingat all)
+FComponent_SetBoolLogicAll(type, bool)
+IComponent_SetBoolLogicAII_I(type; propertyIndext; boolt)
+Inputs: type: [int] the type of component you want to set boolean logic for.
+blockIndex: [int] the index of the component you want to set boolean logic for.
+propertyIndex1: [int] the index of the boolean logic you want to set
+bool1: [bool] the trueffalse you want to set
+Outputs: NIA
+Sets the specified boolean logic for all components of a specific type: Depending on the type of this component this means different things (or
+nothing at all):
+Inputs: type: [int] the type of component you want to set boolean logic for.
+propertyIndexI: [int] the index of the first boolean logic You want to set
+propertyIndex2: [int] the index of the second boolean logic you want to set
+bool2: [bool] the truelfalse you want to set the second logic to.
+Sets the two specified boolean logics for all components of a specific type. Depending on the type of this component this means different
+things (or nothing at all)
+Inputs: type: [int] the type of component you want to set boolean logic for.
+Components
+Sets the two specified boolean logics for all components of a specific type. Depending on the type of this component this means different
+things (or nothing at all)
+Inputs: type: [int] the type of component you want to set boolean logic for.
+propertyIndexI: [int] the index of the first boolean logic You want to set
+propertyIndex2: [int] the index of the second boolean logic You want to set
+bool2: [bool] the truelfalse you want to set the second logic to.
+propertyIndex3: [int] the index of the third boolean logic
+want t0 set
+Outputs: NIA
+Sets the three specified boolean logics for all components of a specific type: Depending on the type of this component this means different
+things (or nothing at all):
+FComponent_SetFloatLogicAll(type, float)
+Inputs: type: [int] the type of component you want to set floating point logic for:
+float [float] the floating
+number you want to set
+Sets the first floating point logic for all components of a specific type: Depending on the type of this component this means different things (or
+nothing at all):
+Inputs: type: [int] the type of component you want to set float logic for.
+propertyIndexI: [int] the index of the float logic You want to set
+floati: [float] the floating point value you want to set
+Outputs: NIA
+Sets the specified floating point logic for all components of a specific type: Depending on the type of this component this means different
+things (or nothing at all)
+Inputs: type: [int] the type of component you want to set float logic for.
+floati: [float] the floating point value you want to set the first logic to_
+propertyIndex2: [int] the index of the second float logic you want to set
+float2: [float] the floating point value you want to set the second logic to.
+Sets the two specified floating point logics for all components of a specific type: Depending on the type of this component this means different
+things (or nothing at all)
+you
+point
+Components
+things (or nothing at all):
+Inputs: type: [int] the type of component you want to set float logic for.
+propertyIndex1: [int] the index of the first float logic you want to set
+floati: [float] the floating point value you want to set the first logic to:
+propertyIndex2: [int] the index of the second float logic you want to set
+float2: [float] the floating point value you want to set the second logic to.
+propertyIndex3: [int] the index of the third float logic you want to set:
+float3: [float] the floating point value you want to set the third logic to.
+Outputs: NIA
+Sets the three
+specified floating
+logics for all components of a specific type. Depending on the type of this component this means
+different things (or nothing at all)
+Inputs: type: [int] the type of component you want t0 set integer logic for.
+float [int] the integer You want to set:
+Outputs: NIA
+Sets the first integer logic for all components of a specific type. Depending on the type of this component this means different things (or
+Inputs: type: [int] the type of component you want to set int logic for.
+propertyIndex1: [int] the index of the int logic you want to set
+inti: [int] the integer number you want to set
+Outputs: NIA
+Sets the specified integer logic for all components of a specific type. Depending on the type of this component this means different things (or
+nothing at all):
+Inputs: type: [int] the type of component you want to set Int logic for
+propertyIndexI: [int] the index of the first int logic you want to set
+propertyIndex2: [int] the index of the second int logic you want to set
+int2: [int] the integer number You want to set the second logic to.
+Outputs: NIA
+Sets the two specified integer logics for all components of a specific type. Depending on the type of this component this means different
+things (or_nothing at all)
+IComponent_SetIntLogicAII_3(type
+propertyIndex , int1, propertyIndex2, int2,
+propertyIndex3, int3)
+Inputs: type: [int] the type of component you want to
+int logic for
+point
+set
+Components
+Inputs: type: [int] the type of component you want to set int logic for.
+propertyIndex1: [int] the index of the int logic you want to set:
+Outputs: NIA
+Sets the
+specified integer logic for all components of a specific type. Depending on the type of this component this means different
+(or
+nothing at all)
+Inputs: type: [int] the type of component you want to set int logic for.
+propertyIndex1: [int] the index of the first int logic you want to set
+inti: [int] the integer number You want to set the first logic to.
+propertyIndex2: [int] the index of the second int logic You want to set
+int2: [int] the integer number
+want to set the second logic to.
+Outputs: NIA
+Sets the two specified integer logics for all components of a specific type: Depending on the type of this component this means different
+things (or nothing at all)
+Inputs: type: [int] the type of component you want to set int logic for.
+propertyIndex1: [int] the index of the first int logic you want to set:
+propertyIndex2: [int] the index of the second int logic You want to set
+int2: [int] the integer number you want to set the second logic to.
+propertyIndex3: [int] the index of the third int logic you want to set
+int3: [int] the integer number You want to set the third logic to.
+Outputs: NIA
+Sets the three specified integer logics for all components of a specific type: Depending on the type of this component this means different
+things (or nothing at all)
+SetHologramProjectorURL(index; url)
+Inputs: type: [int] the index of the
+am projector:
+url: [string] the url to set the
+hologram projector to aS @ string:
+Outputs: NIA
+Sets the url of the specified hologram projector
+ISetPosterHolderURL(index; url)
+Inputs: type: [int] the index of the poster holder.
+url: [string] the url to set the poster holder to as a string:
+Outputs: NIA
+you
+hologre
+Weapons
+IGetWeaponCount()
+Inputs: NIA
+Outputs:
+wea
+apong
+udereapons
+but
+does
+ets
+out weapon
+KGetWeaponInfo(weaponIndex)
+Inputs: weaponIndex: [int] the index of the weapon you want information on.
+0 is the first weapon:
+Outputs: [WeaponInfo] information on the weapon. weaponInfo Valid is false if you ask for an invalid weaponIndex
+WeaponInfo
+Valid [bool]: false means this WeaponInfo packet Is useless. Move onto the next valid one:
+GlobalPosition [Vector3]: the global position of the weapon: x is East; y is Up and Z is North:
+LocalFirePoint [Vector3]: the Iocal position In the vehicle where the projectile or Iaser
+be created:
+GlobalFirePoint [Vector 3]: the global position in the world where the projectile or Iaser will be created.
+Speed [float]: the speed in meters per second of the weapon approximately correct for most weapon types:
+CurrentDirection [Vector 3]: the direction in global coordinate system that the weapon is facing
+WeaponType [int]: the type of the weapon: cannon = 0,missile
+=1,laser
+2,harpoon = 3,turret = 4,missilecontrol = 5,fireControlComputer
+F6
+WeaponSlot [int]: the weapon slot of the weapon itself:
+0 > 5.
+WeaponSlotMask [int]: the weapon slot bit mask The rightmost bit represents 'ALL' and Is always on, and the second bit represents slot 1, etc (for example 100111 will
+respond to slots All; 1, 2, and 5)
+FGet WeaponConstraints(weaponIndex)
+Inputs: weaponIndex: [int] the index of the weapon you want the constraints off: 0 Is the first weapon:
+Outputs: [WeaponConsraints] Information on the field-of-fire constraints of the weapon:
+Gets field-of-fire constrains information for a specific weapon:
+WeaponConstraints
+Valid [bool]: false means this WeaponConstraints packet is useless. Move onto the next valid one:
+MinAzimuth [float]: the minimum azimuth angle In degrees:
+MaxAzimuth [float]: the maximum azimuth angle in degrees:
+MinElevation [float]: the minimum elevation angle In degrees.
+MaxElevation [float]: the maximum elevation angle In degrees:
+FlipAzimuth [bool]: true if the 'Flip azimuth constraints' toggle is selected.
+InParentConstructSpace [bool]: true if the 'Set the restrictions in the parent construct space' toggle is selected
+KGetWeaponBlockInfo(weaponIndex)
+Inputs: weaponIndex: [int] the index of the weapon you want information on. 0 is the first weapon:
+will
+Weapons
+InParentConstructSpace [bool]: true if the 'Set the restrictions in the parent construct space' toggle is selected
+IGetWeaponBlockInfo(weaponIndex)
+Inputs: weaponIndex: [int] the index of the weapon you want information on: 0 is the first weapon:
+Outputs: [BlockInfo] the block information of the main component of the weapon: See 'Components' for information on BlockInfo:
+Gets the block information for
+a specific weapon:
+Inputs: weaponIndex: [int] 0 is the first weapon:
+Xy,z: [floats] the world coordinate scheme direction components to point in:
+dont need to be normalised:
+weaponslot: [int] 0 for all; otherwise
+1 to 5.
+Outputs: [int] the number of weapons that can fire in this direction: 0 for none:
+IFireWeapon(weaponIndex; weaponSlot)
+Inputs: weaponIndex: [int] 0 is the first weapon:
+Click to copy the function call to
+weaponSlot: [int] 0 will control all weapons
+your clipboard
+Outputs:
+Hbeol]
+es
+has
+won't fire if they cant fire in the direction
+are
+IGetTurretSpinnerCount()
+Obsolete
+Inputs:
+Outputs: [int] the number of turrets and spinners on the construct
+Returns the number of turrets and spinners on the construct: Youll need this function if you want to control turreted or spin block mounted
+weapons individually
+IGetWeaponCountOnTurretOrSpinner(turret SpinnerIndex)
+Obsolete; please use
+'GetWeaponCountOnSubConstruct' instead
+Inputs: turretSpinnerIndex: [int] 0 is the first turret or spinner
+Outputs; Ent} theg
+eumbebeof weapopoon
+turret itself then note that it is treated as a hull mounted
+GetWeaponInfoonTurretOrSpinner(turretSpinnerIndex; weaponIndex)
+Obsolete; please
+use
+'GetWeaponInfoonSubConstruct" instead
+Inputs: turretSpinnerIndex: [int] the index of the turret or spinner. 0 is the first one:
+Outputs: [WeaponInfo] a WeaponInfo object See above for the definition of this structure: Note that
+'changes to this structure in LUA do not affect the weapon itself
+Get weapon info of a weapon on a turret or spinner
+Obsolete, please use 'AimWeaponInDirectiononSubconstruct' instead
+Inputs: First argument is now the turret spinner Index, otherwise see 'AimWeaponInDirection'
+Outputs: as per AimWeaponInDirection
+Aims a specific weapon on the turret without aiming the turret
+They
+they
+they
+NIA
+Weapons
+InParentConstructSpace [bool]: true if the 'Set the restrictions in the parent construct space' toggle is selected
+IGetWeaponBlockInfo(weaponIndex)
+Inputs: weaponIndex: [int] the index of the weapon you want information on: 0 is the first weapon:
+Outputs: [BlockInfo] the block information of the main component of the weapon: See 'Components' for information on BlockInfo:
+Gets the block information for
+a specific weapon:
+Inputs: weaponIndex: [int] 0 is the first weapon:
+Xy,z: [floats] the world coordinate scheme direction components to point in:
+dont need to be normalised:
+weaponslot: [int] 0 for all; otherwise
+1 to 5.
+Outputs: [int] the number of weapons that can fire in this direction: 0 for none:
+IFireWeapon(weaponIndex; weaponSlot)
+Inputs: weaponIndex: [int] 0 is the first weapon:
+weaponSlot: [int] 0 will control all weapons
+Outputs:
+Hbeol]
+es
+has
+won't fire if they cant fire in the direction
+are
+IGetTurretSpinnerCount()
+Obsolete
+Inputs:
+Outputs: [int] the number of turrets and spinners on the construct
+Returns the number of turrets and spinners on the construct: Youll need this function if you want to control turreted or spin block mounted
+weapons individually
+IGetWeaponCountOnTurretOrSpinner(turret SpinnerIndex)
+Obsolete; please use
+'GetWeaponCountOnSubConstruct' instead
+Inputs: turretSpinnerIndex: [int] 0 is the first turret or spinner
+Outputs; Ent} theg
+eumbebeof weapopoon
+turret itself then note that it is treated as a hull mounted
+GetWeaponInfoonTurretOrSpinner(turretSpinnerIndex; weaponIndex)
+Obsolete; please
+use
+'GetWeaponInfoonSubConstruct" instead
+Inputs: turretSpinnerIndex: [int] the index of the turret or spinner. 0 is the first one:
+Outputs: [WeaponInfo] a WeaponInfo object See above for the definition of this structure: Note that
+'changes to this structure in LUA do not affect the weapon itself
+Get weapon info of a weapon on a turret or spinner
+Obsolete, please use 'AimWeaponInDirectiononSubconstruct' instead
+Inputs: First argument is now the turret spinner Index, otherwise see 'AimWeaponInDirection'
+Outputs: as per AimWeaponInDirection
+Aims a specific weapon on the turret without aiming the turret
+They
+they
+they
+NIA
+Weapons
+Get weapon info of & weapon on a turret or spinner
+Obsolete; please use 'AimWeaponInDirectionOnSubConstruct
+instedd
+Outputs: as per AimWeaponInDirection
+Aims a specific weapon on the turret without aiming the turret
+IFireWeaponOnTurretOrSpinner(turretSpinnerIndex weaponIndex,weaponslot)
+Obsolete; please use
+'FireWeaponOnSubConstruct' instead
+Inputs: First argument is now the turret spinner index otherwise see 'FireWeapon'
+Outputs:,
+can't fire in the direction they are
+IGetWeaponCount OnSubConstruct (SubConstructIdentifier)
+turret itself then note that it is treated as a hull mounted
+GetWeaponInfoonsubConstruct(SubConstructIdentifier; weaponIndex)
+Inputs: SubconstructIdentifier: [int] This Identifier never change in the blueprint; use the Subconstructs-related functions to get it
+weaponIndex: [int] the index of the weapon: 0 is the first one:
+Outputs: [WeaponInfo] a WeaponInfo object See above for the definition of this structure: Note that changes to this structure in LUA do not affect the weapon itself:
+Inputs: SubConstructIdentifier: [int] This identifier never change In the blueprint use the SubConstructs-related functions to
+It:
+weaponIndex: [int] the index of the weapon:
+0 is the first one:
+Outputs: [WeaponConsraints] information on the field-of-fire constraints of the weapon:
+Gets field-of-fire constrains information for
+specific weapon:
+GetWeaponBlockInfoonsubConstruct(SubConstructIdentifier, weaponIndex)
+Inputs: SubconstructIdentifier: [int] This Identifier never change In the blueprint
+use the Subconstructs-related functions t0 get it
+weaponIndex: [int] the index of the weapon: 0 is the first one:
+Outputs: [BlockInfo] the block inforamation of the main component of the weapon: See 'Components' for information on BlockInfo:
+Gets the block information for
+specific weapon.
+Inputs: 'SubConstructIdentifier' is the SubConstruct identifier. For the other parameters, see 'AimWeaponInDirection'
+Outputs: as per AimWeaponInDirection
+Aims a specific weapon
+the turret without aiming the turret
+Inputs: 'SubConstructIdentifier' is the SubConstruct identifier. For the other parameters, see 'FireWeapon
+Outputs H[beol]
+weapons that you aim them first as they won't fire if they cant fire in the direction they are
+they
+get_
+Missile Warning
+IGetNumber OfWarnings()
+Inputs: NIA
+Outputs: [int] the number of missiles
+warned on
+Return the number of missiles the construct has Warnings for
+FGetMissileWarning(missileIndex)
+Inputs: missileIndex: [int] the Index of the missile
+Outputs: [MissileWarningInfo] information on the missile. missileWarningInfo Valid
+false if you didnt request an existing missile index
+Request information on a specific missile warning
+MissileWarningInfo
+Valid: [bool] false If the warning Is junk due to incorrect indices:
+Position: [Vector3] the position of the missile
+Velocity: [Vector 3] the velocity of the missile In meters per second
+Range
+[float] the distance from centre of mass of your construct to the missile
+Azimuth :[float] the azimuth angle between your construct's forward direction and the missile (degrees)
+Elevation: [float] the elevation angle between your constructs forward direction and the missile (degrees)
+TimeSinceLaunch: [float] the time since missile Iaunch:
+Id: [int] the unique Id of the missile
+belng
+Missile Guidance
+Connect LUA Transceivers to your missile blocks to allow missiles from those missile blocks to be send LUA Guidance points
+IGetLuaTransceiverCount()
+Inputs: NIA
+Outputs: [int] the number of LuaTransceivers
+Return the number of LuaTransceivers: Each transceiver can have a number of missiles which are controllable
+IGetLudControlledMissileCount(ludTransceiverIndex)
+Inputs: luaTransceiverIndex: [int] the index of the LuaTransceiver where 0 Is the first one
+Outputs: [int] the number of missiles associated with that LuaTransceiver
+Returns the number of missiles which that luaTransceiver has communications link to
+GetLuaTransceiverInfo(luaTransceiverIndex)
+Inputs: luaTransceiverIndex: [int] the Index of the LuaTransceiver where 0 is the first one
+Outputs: [BlockInfo] a Blocklnfo object for the LuaTransceiver'$ Launchpad
+Returns a BlockInfo object for the LuaTransceiver's Launchpad: If no Launch pad exists it'Il return it for the LuaTransceiver
+See the Components tab for the BlockInfo structure
+IGetLuaControlledMissileInfo(luaTransceiverIndex missileIndex)
+Inputs: luaTransceiverIndex: [int] 0 is the first one:
+missileIndex: [int] 0 is the first missile:
+Outputs: [MissileWarningInfo] Get a MissileWarningInfo object for your missile:
+Returns a MissileWarningInfo structure for your missile: You can tell where it is and how fast it is going from this
+See the Missile Warning tab for the MissileWarningInfo structure
+Inputs: luaTransceiverIndex: [int] as above
+missileIndex [int] as above.
+Xy,z: [floats] global coordinates of the aim point
+Outputs: NIA
+Sets the aim point: No guidance modules will help achieve this aim
+So do your own
+predictive guidance: Needs a lua receiver
+component ON the missile tO work
+IDetonateLuaControlledMissile(luaTransceiverIndex;missileIndex)
+Inputs: luaTransceiverIndex: [int] as above:
+missileIndex:[int] as above.
+Outputs: NIA
+Explodes the missile: Needs a Iua receiver component ON the missile t0 work
+TIsLuaControlledMissileAnInterceptor(luaTransceiverIndex missileIndex)
+Inputs: luaTranceiverIndex [int] 0 Is the first one
+missileIndex:[int] 0 is the first one
+point
+Missile Guidance
+IGetLuaControlledMissileInfo(luaTransceiverIndex missileIndex)
+Inputs: luaTransceiverIndex: [int] 0 is the first one:
+missileIndex: [int] 0 iS the first missile:
+Outputs: [MissileWarningInfo] Get a MissileWarningInfo object for your missile.
+Returns a MissileWarningInfo structure for
+missile: You can tell where it is and how fast it is going from this
+See the Missile Warning tab for the MissileWarningInfo structure
+ISetLuacontrolledMissileAimPoint(luaTransceiverIndex missileIndex,X,Y,2)
+Inputs: luaTransceiverIndex: [int] as above:
+missileIndex [int] as above.
+Xy,z: [floats] global coordinates of the aim
+Outputs: NIA
+Sets the aim point: No guidance modules will help achieve this aim point so do your own predictive guidance: Needs a lua receiver
+component ON the missile t0 work
+Inputs: luaTransceiverIndex: [int] as above:
+missileIndex:[int] as above.
+Outputs: NIA
+Explodes the missile: Needs a Iua receiver component ON the missile to work:
+LuaControlledMissileAnInterceptor(luaTransceiverIndex,missileIndex)
+Click to copy the function call to
+missileIndex:[int] 0 is the first one
+Outputs: [bool]: true means the missile has an interceptor module; otherwise false Is returned: If the missile has no lua redyour clipboard
+Find out if the missile has an interceptor capability:
+FSetLudControlledMissileInterceptorTarget(luaTransceiverIndex, missileIndex targetIndex)
+Inputs: luaTransceiverIndex [int] 0 is the first one
+missileIndex:[int] 0 is the first one,
+targetIndex [int] 0 is the first missile which that mainframe has @ warning for
+Outputs:
+Set
+target of an interceptor missile to be a specific missile for which a warning exists. This is enough to get the interceptor missile to
+behave normally but if you want to actually
+it yourself use SetLuaControlledMissileInterceptorStandardGuidanceOnoff to turn the
+AfE
+ISetLudControlledMissileInterceptorStandardGuidanceOnoff(luaTranceiver,missileIndex; onOff)
+Inputs: luaTransceiver Index:[int] 0 is the first one
+missileIndex:[int] 0 is the first one
+onOff [bool] true will use standard missile guidance to aim at the Interceptors target false will rely on SetLuaControlledMissileAimPoint for aiming coordinates:
+Outputs: NIA
+your
+point
+guide
+Spinners
+Spin blocks spinners have their own interface because
+use 'SubConstruct' identifiers
+ESet SpinBlockSpeedFactor(SubConstructIdentifier,speedFactor)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+speedFactor:[float] 0 to 1, the fractional power output
+Outputs: NIA
+Set the speed factor
+In continuous mode spinners this allows some blades t0 spin slower than others; in insta-spin blades this is related to the
+speed they are spinning at (1 is max speed 0 is no speed) and in rotation spinners this does nothing:
+ISet SpinBlockPowerDrive(SubConstructIdentifier;drive)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the SubConstruct
+drive:[float] the relative power use of the spinner (0 to 10).
+Outputs: NIA
+sets the power drive: this allows heliblades to produce more force: Requires engine power. 0 removes engine use: 10 is maximum power
+Set SpinBlockRotationAngle(SubConstructIdentifier; angle)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the SubConstruct
+angle:[float] angle in degrees to turn to.
+Outputs
+NIA
+Sets the angle of rotation: Changes the spinner into Rotate mode_
+'Rotatebackwards' is not available through this interface but you shouldnt
+ISet SpinBlockContinuousSpeed(SubConstructIdentifier, speed)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+speed [float] speed to rotate at: 30 is the maximum 50 values from -30 to 30 work
+Outputs:
+Sets the speed of rotation: Changes the spinner into continuous mode: 'ContinuouseReverse' mode is not available through this interface so set
+the speed negative to facilitate reverse spinning
+Set SpinBlockInstaSpin(SubConstructIdentifier,magnitudeAndDirection)
+Inputs: SubConstructIdentifier:[Int] the persistent Identifier of the SubConstruct
+magnitudeAndDirection:[float]
+1 means spin backwards full speed,
+is spin forwards full speed
+Outputs: NIA
+Spins the blades in a direction and speed determined by magnitudeAndDirection: Will set the spinner into instaspin forwards mode and will
+affect speed factor variable of the spinner.
+Pistons have their own interface because they use 'SubConstruct' identifiers
+IGetPistonExtension(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Outputs: [float] the extension distance of the piston in meters
+Get the extension of the piston;
+if not found:
+IGetPistonVelocity(SubConstructIdentifier)
+they
+Spinners
+affect speed factor variable of the spinner.
+Pistons have their own interface because they use 'SubConstruct' identifiers
+GetPistonExtension(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[Int] the persistent Identifier of the SubConstruct
+Outputs: [float] the extension distance of the piston in meters
+Get the extension of the piston;
+1 if not found.
+KGetPistonVelocity(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Outputs: [float] the velocity of the piston in meters per second
+Get the velocity of the piston (always positive)
+Tif not found:
+ISetPistonExtension(SubConstructIdentifier ExtensionDistance)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+ExtensionDistance:[float]the extension distance of the piston (in meters, will be clamped if necessary)
+Outputs: NIA
+Set the extension of the piston:
+TSetPistonVelocity(SubconstructIdentifier,ExtensionVelocity)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the SubConstruct
+ExtensionDistance [floatjthe velocity of the piston in meters per second (between 0.1 and 2)
+Outputs: NIA
+Set the velocity of
+piston:
+Dedicated helicopter spinners have their own interface because they have their own indexing system
+Inputs: NIA
+Outputs: [int] the number of dedicated helicopter spinners
+Returns the number of dedicated helicopter spinners
+IGetDedibladeInfo(DedibladeIndex)
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner
+Outputs: [BlockInfo] a block info object for the dedicated helicopter spinner.
+Returns block info for the dedicated helicopter spinner .
+TIsDedibladeOnHull(DedibladeIndex)
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner
+Outputs: [bool] true if on hull
+Returns whether the dedicated helicopter spinner is on the hull or on a SubConstruct
+Inputs: DedibladeIndex:[int] 0 Is the first dedicated helicopter spinner.
+the
+Spinners
+Set the velocity of the piston:
+Dedicated helicopter spinners have their own interface because they have their own indexing system
+IGetDedibladeCount()
+Inputs: NIA
+Outputs: [int] the number of dedicated helicopter spinners
+Returns the number of dedicated helicopter spinners
+IGetDedibladeInfo(DedibladeIndex)
+Inputs: DedibladeIndex:[int] 0 Is the first dedicated helicopter spinner
+Outputs: [BlockInfo] a block info object for the dedicated helicopter spinner.
+Returns block info for the dedicated helicopter spinner.
+EIsDedibladeOnHull(DedibladeIndex)
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner
+Outputs: [bool] true if on hull
+Returns whether the dedicated helicopter spinner is on the hull or on a SubConstruct:
+ISetDedibladeSpeedFactor(DedibladeIndex,speedFactor)
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner.
+speedFactor:[float] 0 to 1, the fractional power output
+Outputs: NIA
+Set the speed factor_
+In continuous mode spinners this allows some blades to spin slower than others; in insta-spin blades this is related to the
+speed they are spinning at (1 is max speed, 0 is no speed)and in rotation spinners this does nothing:
+ISetDedibladePowerDrive(DedibladeIndex drive)
+Inputs: DedibladeIndex: [int] 0 is the first dedicated helicopter spinner.
+drive: [float] the relative power use of the dedicated helicopter spinner (0 to 10):
+Outputs:
+NIA
+Sets the power drive: this allows heliblades t0 produce more force: Requires engine power. 0 removes engine use: 10 is maximum power
+ISetDedibladeContinuousspeed(DedibladeIndex; speed)
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner.
+speed:[float] speed to rotate at 30 iS the maximum 50 values from
+30 to 30 work
+Outputs:
+Sets the speed of rotation: Changes the dedicated helicopter spinner into continuous mode: 'ContinuouseReverse' mode is not available
+through this interface so set the speed negative to facilitate reverse spinning
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner.
+magnitudeAndDirection  [float]
+means spin backwards full speed,
+1 is spin forwards full speed
+Spinners
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner.
+speedFactor:[float] 0 to 1, the fractional power output
+Outputs: NIA
+Set the speed factor. In continuous mode spinners this allows some blades t0 spin slower than others; in insta-spin blades this is related t0 the
+speed they are spinning at (1 is max speed, 0 is no speed) and in rotation spinners this does nothing:
+ISet DedibladePowerDrive(DedibladeIndex;drive)
+Inputs: DedibladeIndex [int] 0 is the first dedicated helicopter spinner.
+drive [float] the relative power use of the dedicated helicopter spinner (0 to 10).
+Outputs
+sets the power drive: this allows heliblades to produce more force: Requires engine power. 0 removes engine use_
+10 is maximum power
+ISetDedibladeContinuousSpeed(DedibladeIndex; speed)
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner.
+speed:[float] speed to rotate at 30 is the maximum 5o values from -30 to 30 work
+Outputs:
+Sets the speed of rotation: Changes the dedicated helicopter spinner into continuous mode
+'ContinuouseReverse' mode is not available
+through this interface so set the speed negative to facilitate reverse spinning
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner.
+magnitudeAndDirection [float]
+means spin backwards full speed,
+is spin forwards full speed
+Outputs: NIA
+Spins the blades in a direction and speed determined by
+magnitudeAndDirection: Will set the dedicated helicopter spinner into instaspin
+forwards mode and will affect speed factor variable of the spinner
+ISetDedibladeUpFraction(DedibladeIndex,upFraction)
+Inputs: DedibladeIndex:[int] 0 is the first dedicated helicopter spinner.
+upFraction [float] 0 to
+Outputs: NIA
+Sets the fraction of the force that will be applied directly upwards regardless of blade orientation:
+From now on, these functions are obsolete, please use the 'SubConstructs' set of functions
+IGet SpinnerCount()
+Obsolete, please see the
+SubConstructs
+set 0f functions
+Inputs: NIA
+Returns the number of spin blocks and dedicated helispinners
+IGet SpinnerInfo(index)
+Obsolete; please see the
+SubConstructs' set of functions
+Inputs: index:[int] 0 is the first spin block
+Outputs: [BlockInfo] a block Info object for the spin block
+Spinners
+Outputs: NIA
+Sets the fraction of the force that will be
+applied directly upwards; regardless of blade orientation:
+From now on, these functions are obsolete, please use the 'SubConstructs' set of functions
+IGet SpinnerCount()
+Obsolete, please see the 'SubConstructs' set 0f functions
+Inputs: NIA
+Returns the number of spin blocks and dedicated helispinners
+IGet SpinnerInfo(index)
+Obsolete; please see the
+SubConstructs' set of functions
+Inputs: index:[int] 0 is the first spin block
+Outputs: [BlockInfo] a block Info object for the spin block
+Returns block info for the spinner
+For
+a spin block it will return block info where Iocal positions and rotations are those of the actual spinning
+assemblynot the block itself:
+TSet Spinner SpeedFactor(index,speedFactor)
+Obsolete; please
+See
+the
+SubConstructs
+set of functions
+Inputs: index:[int] the index of the spinner.
+Click to copy the function call to
+speedFactor:[float] 0 to
+1, the fractional power output
+clipboard
+Outputs: NYA
+Set the speed factor_
+In continuous mode spinners this allows some blades to spin slower than others; in insta-spin blades this is related to the
+speed they are spinning at (1 is max speed,
+0 is no speed)and in rotation spinners this does nothing:
+ISet SpinnerPowerDrive(index;drive)
+Obsolete; please see the 'SubConstructs' set of functions
+Inputs: index[int] the index of the spinner. 0 is the first
+drive [float] the relative power use of the spinner (0 to 10).
+Outputs:_NIA
+sets the power drive: this allows heliblades to produce more force: Requires engine power. 0 removes engine use. 10 is maximum power
+ISet SpinnerRotationAngle(index; angle)
+Obsolete; please
+See
+the
+SubConstructs' set of functions
+Inputs: index [int] 0 is the first spinner.
+angle:[float] angle in degrees to turn to.
+Outputs_
+Sets the angle of rotation: Changes the spinner into Rotate mode_
+'Rotatebackwards' is not available through this interface but you shouldnt
+ISet SpinnerContinuousSpeed(index; speed)
+Inputs: index:[int] 0 is the first spinner.
+speed:[float] speed to rotate at 30 is the maximum 50 values from -30 to 30 work
+Outputs:
+Sets the speed of rotation: Changes the spinner into continuous mode: 'ContinuouseReverse' mode is not available through this interface so set
+the speed negative to facilitate reverse spinning:
+Se
+Ide
+Andbirection
+Obsolete
+please seethe
+Subconstructs
+your
+Spinners
+ISet SpinnerPowerDrive(index,drive)
+Obsolete, please see the 'SubConstructs' set of functions
+Inputs: index[int] the index of the spinner. 0 Is the first
+drive:[float] the relative power use of the spinner (0 to 10).
+Outputs SN/A the power drive: this allows heliblades to produce more force: Requires engine power. 0 removes engine use. 10 is maximum power
+ISet Spinner RotationAngle(index; angle)
+Obsolete, please see the 'SubConstructs' set of functions
+Inputs: index:[int] 0 is the first spinner.
+angle:[float] angle in degrees to turn to.
+Outputs
+NIA
+Sets the angle of rotation: Changes the spinner into Rotate mode_
+'Rotatebackwards' is not available through this interface but you shouldnt
+ISet SpinnerContinuousSpeed(index; speed)
+Obsolete; please see the 'SubConstructs" set 0f functions
+Inputs: index [int] 0 is the first spinner.
+speed:[float] speed to rotate at 30 is the maximum 50 values from
+30 to 30 work
+Outputs:
+Sets the speed of rotation: Changes the spinner into continuous mode: 'ContinuouseReverse' mode is not available through this interface so set
+the speed negative to facilitate reverse spinning:
+ISet SpinnerInstaspin(index magnitudeAndDirection)
+Obsolete; please see the
+SubConstructs" set of functions
+Inputs: Index:[int] 0 is the first spinner.
+magnitudeAndDirection [float]
+1 means spin backwards full speed;
+is spin forwards full speed
+Outputs: NIA
+Spins the blades in a direction and speed determined by magnitudeAndDirection. Will set the spinner into instaspin forwards mode and will
+affect speed factor variable of the spinner
+EIsSpinnerDedicatedHelispinner(index)
+Obsolete
+Inputs: index:[int] 0 is the first spinner.
+Outputs: [bool] true if the spinner is @ dedicated spinner.
+Returns whether the spinner in question is a dedicated helispinner
+EIsSpinnerOnHull(index)
+or 'IsSubConstruct OnHull' function
+Inputs: index [int] 0 is the first spinner
+Outputs: [bool] true if on hull
+Returns whether the spinner is on the hull or on another spin block This can only be true for dedicated helispinners
+ISetDedicatedHelispinnerUpFraction(index;upFraction)
+Obsolete; please use the "SetDedibladeUpFraction' function
+Inputs: index:[int] 0 is the first spinner.
+upFraction [float] 0 to
+Outputs: NIA
+SubConstructs
+SubConstructs (turrets and spin blocks) have their own interface dedicated to work with stacked SubConstructs:
+all have a unique persistent index which will never be
+modified in the blueprint (that index starts at 1)
+Inputs: NIA
+Outputs: [int] the total number of SubConstructs on the vehicle
+Returns the number of SubConstructs on the vehicle; including SubConstructs on SubConstructs
+IGet SubconstructIdentifier(index)
+Inputs: Index:[int] 0 is the first SubConstruct
+Outputs: [int] the persistent identifier of the SubConstruct
+Returns the identifier of the SubConstruct: The indices start at 0 and are in no particular order
+IGet SubconstructschildrenCount(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the SubConstruct
+Outputs: [int] all the number of SubConstructs directly placed on the given SubConstruct
+Returns the number of SubConstructs on the given SubConstruct
+IGetSubConstructChildidentifier(SubConstructIdentifier; index)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the parent SubConstruct
+index:[int] 0 is the first child SubConstruct
+Outputs: [int] the persistent identifier of the SubConstruct
+Returns the identifier of the child SubConstruct placed on the parent SubConstruct. The indices start at 0 and are in no particular order
+IGetParent(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the Subconstruct
+Click to copy the function call to
+Outputs: [int] the persistent index of the parent SubConstruct of the given SubConstruct
+your clipboard
+Returns the persistent index of the parent SubConstruct of the given SubConstruct;
+'0' for the MainConstruct,
+"Tif not found
+IIsTurret(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Indicates if the SubConstruct iS & turret or not
+I(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Indicates if the SubConstruct iS a spin block or not
+IIsPiston(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the SubConstruct
+Outputs: [bool] 'true' if the SubConstruct is @ piston; 'false' otherwise:
+Indicates if the SubConstruct is a piston or not
+They
+SubConstructs
+index [int] 0 is the first child Subconstruct
+Outputs: [int] the persistent identifier of the SubConstruct
+Returns the identifier of the child SubConstruct placed on the parent SubConstruct. The indices start at 0 and are in no particular order
+IGetParent(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Outputs: [int] the persistent index of the parent Subconstruct of the given SubConstruct
+Returns the persistent index of the parent SubConstruct of the given SubConstruct; '0' for the Mainconstruct
+1'if not found
+IIsTurret(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Outputs: [bool] 'true' if the SubConstruct Is @ turret 'false' otherwise.
+Indicates if the SubConstruct iS a turret or not
+EIsSpinBlock(SubconstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the SubConstruct
+Indicates if the SubConstruct is a spin block or not
+IIsPiston(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Outputs: [bool] 'true' if the SubConstruct Is @ piston; 'false' otherwise:
+Indicates if the SubConstruct is a piston or not
+IIsAlive(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the SubConstruct
+Outputs: [bool] 'true' if the Subconstruct Is not completely destroyed.
+Indicates if the SubConstruct is destroyed or not
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Outputs: [bool] 'true' if the SubConstruct is on the hull:
+Indicates if the SubConstruct is on the hull or not
+Get SubconstructInfo(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent Identifier of the Subconstruct
+Outputs: [BlockInfo] a BlockInfo object for the SubConstruct active block (the SpinBlock block the piston or the turret block)
+Returns a BlockInfo object for the active block of the SubConstruct; and invalid BlockInfo if the SubConstruct hasnt been found:
+TGetSubconstructIdleRotation(SubConstructIdentifier)
+Inputs: SubConstructIdentifier:[int] the persistent identifier of the SubConstruct
+Outputs: [Quaternion] the rotation of the subconstruct relative t0 its parent as it was first placed:
+Friendlies
+The following API will provide you with the positions of friendly vehicles- in the same manner as
+KGetFriendlyCount()
+Inputs: NIA
+Outputs: [int] the number of friendlies spawned into the world
+Returns the number of friendly constructs
+GetFriendlyInfo(index)
+Inputs: iIndex: [int] 0 is the first construct
+Outputs: [FriendlyInfo] the FriendlyInfo object
+Returns a friendly info object for a friendly vehicle
+GetFriendlyInfoById(Id)
+Inputs: Id: [int] the Id you want
+Outputs: [FriendlyInfo] the FriendlyInfo object
+Returns a friendly info object for an Id
+FriendlyInfo
+Valid:[bool] false if the Friendly Info could not be retrieved
+Rotation:[Quaternion] the rotation of the friendly construct
+ReferencePosition: [Vector 3] the position of the construct (world East Up North frame) from which PositiveSize and Negative size are referenced
+PositiveSize: [Vector3] the extent of the construct in the right,up forwards direction relative to ReferencePostion
+Center OfMass: [Vector 3] the centre of mass of the construct in worlIsSpinBlockd East Up North frame
+Velocity: [Vector 3] the velocity of the construct in world East Up North frame
+UpVector: [Vector 3] The up vector in world East Up North frame
+RightVector: [Vector3] The up vector in world East Up North frame
+ForwardVector: [Vector 3] The forward vector in world East Up North frame
+HealthFraction: [float] the fraction of health (including turrets etc)
+SparesFraction: [float] the spares fraction: Returns
+if no spares storage present
+AmmoFraction: [float] the ammo fraction: Returns 1 if no ammo storage present
+FuelFraction: [float] the fuel fraction. Returns 1 if no fuel storage present
+EnergyFraction: [float] the energy fraction: Returns 1 if no batteries present
+PowerFraction: [float] the power fraction: Returns 1 if no fuel storage present
+ElectricPowerFraction: [float] the electric power fraction: Returns
+if no fuel storage present
+AxisAlignedBoundingBoxMinimum: [Vector 3] the world East Up North minimum extent of the construct
+AxisAlignedBoundingBoxMaximum: [Vector3] the world East Up North maximum extent of the construct
+BlueprintName: [string] the name
+Id: [int] the unique Id of the construct

@@ -1,0 +1,3368 @@
+{
+  "FTD Lua": {
+    "overview": {
+      "language": "Lua",
+      "entry_point": "Update(I)",
+      "execution_frequency": "40 physics steps per game second",
+      "interface_object": "I"
+    },
+    "syntax": {
+      "string_concatenation": "..",
+      "function_calls": ":",
+      "comments": "--",
+      "for_loops": "for i=0,10 do ... end",
+      "if_statements": "if condition then ... end"
+    },
+    "logging": {
+      "functions": [
+        {
+          "name": "I:Log",
+          "description": "Outputs a message to the log",
+          "inputs": {
+            "message": {
+              "type": "string",
+              "description": "The message you want to write to the log"
+            }
+          },
+          "outputs": "Message visible in editor and 'Errors Log' panel"
+        },
+        {
+          "name": "I:ClearLog",
+          "description": "Clears your log",
+          "inputs": null,
+          "outputs": null
+        },
+        {
+          "name": "I:LogToHud",
+          "description": "Writes a message to the HUD",
+          "inputs": {
+            "message": {
+              "type": "string",
+              "description": "Message to display on HUD"
+            }
+          },
+          "outputs": "Message visible during play and on map"
+        }
+      ]
+    },
+    "libraries": {
+      "available": [
+        {
+          "name": "Vector3",
+          "description": "Unity's Vector3 library",
+          "usage": "V = Vector3(x,y,z), Vector3.Angle(v1,v2)"
+        },
+        {
+          "name": "Quaternion",
+          "description": "Unity's Quaternion library"
+        },
+        {
+          "name": "Mathf",
+          "description": "Mathematical functions"
+        }
+      ]
+    },
+    "fleet": {
+      "functions": [
+        {
+          "name": "I.FleetIndex",
+          "description": "Position of ship in fleet starting from 0",
+          "type": "read_only",
+          "outputs": {
+            "type": "int",
+            "description": "Fleet index position"
+          }
+        },
+        {
+          "name": "I.Fleet",
+          "description": "Current state of the fleet",
+          "type": "read_only",
+          "outputs": {
+            "type": "FleetInfo",
+            "description": "Information about the fleet"
+          }
+        },
+        {
+          "name": "I.IsFlagship",
+          "description": "Determines if ship is fleet flagship",
+          "type": "read_only",
+          "outputs": {
+            "type": "bool",
+            "description": "True if craft is flagship"
+          }
+        }
+      ],
+      "data_types": {
+        "FleetInfo": {
+          "ID": {
+            "type": "int",
+            "description": "Unique ID of the fleet"
+          },
+          "Name": {
+            "type": "string",
+            "description": "Name of the fleet"
+          },
+          "Flagship": {
+            "type": "FriendlyInfo",
+            "description": "Information about the flagship"
+          },
+          "Members": {
+            "type": "FriendlyInfo[]",
+            "description": "Table of fleet members information (may contain nils)"
+          }
+        }
+      }
+    },
+    "resources": {
+      "functions": [
+        {
+          "name": "I.ResourceZones",
+          "description": "List of known resource zones",
+          "type": "read_only",
+          "outputs": {
+            "type": "ResourceZoneInfo[]",
+            "description": "Array of resource zone information"
+          }
+        },
+        {
+          "name": "I.Resources",
+          "description": "Ship resource data",
+          "type": "read_only",
+          "outputs": {
+            "type": "ResourceInfo",
+            "description": "Information about ship's available resources"
+          }
+        }
+      ],
+      "data_types": {
+        "ResourceZoneInfo": {
+          "Id": {
+            "type": "int",
+            "description": "Unique ID of the Resource Zone"
+          },
+          "Name": {
+            "type": "string",
+            "description": "Name of the Resource Zone"
+          },
+          "Position": {
+            "type": "Vector3",
+            "description": "Position of the Resource Zone"
+          },
+          "Radius": {
+            "type": "float",
+            "description": "Radius of the Resource Zone"
+          },
+          "Resources": {
+            "type": "ResourceInfo",
+            "description": "Available resources of the Resource Zone"
+          }
+        },
+        "ResourceInfo": {
+          "CrystalTotal": {
+            "type": "float",
+            "description": "Total Crystal resources"
+          },
+          "CrystalMax": {
+            "type": "float",
+            "description": "Max Crystal resources"
+          },
+          "MetalTotal": {
+            "type": "float",
+            "description": "Total Metal resources"
+          },
+          "MetalMax": {
+            "type": "float",
+            "description": "Max Metal resources"
+          },
+          "NaturalTotal": {
+            "type": "float",
+            "description": "Total Natural resources"
+          },
+          "NaturalMax": {
+            "type": "float",
+            "description": "Max Natural resources"
+          },
+          "OilTotal": {
+            "type": "float",
+            "description": "Total Oil resources"
+          },
+          "OilMax": {
+            "type": "float",
+            "description": "Max Oil resources"
+          },
+          "ScrapTotal": {
+            "type": "float",
+            "description": "Total Scrap resources"
+          },
+          "ScrapMax": {
+            "type": "float",
+            "description": "Max Scrap resources"
+          }
+        }
+      }
+    },
+    "ai": {
+      "functions": [
+        {
+          "name": "I:GetAIMovementMode",
+          "description": "Returns movement mode of AI mainframe",
+          "inputs": {
+            "index": {
+              "type": "int",
+              "description": "Index of the AI mainframe"
+            }
+          },
+          "outputs": {
+            "type": "string",
+            "description": "Movement mode of the AI mainframe"
+          }
+        },
+        {
+          "name": "I:GetAIFiringMode",
+          "description": "Returns firing mode of AI mainframe",
+          "inputs": {
+            "index": {
+              "type": "int",
+              "description": "Index of the AI mainframe"
+            }
+          },
+          "outputs": {
+            "type": "string",
+            "description": "Firing mode (Off, On)"
+          }
+        },
+        {
+          "name": "I.AIMode",
+          "description": "Returns AI mode (obsolete)",
+          "status": "obsolete",
+          "replacement": "GetAIMovementMode",
+          "type": "read_only",
+          "outputs": {
+            "type": "string",
+            "description": "AI mode (off, on)"
+          }
+        },
+        {
+          "name": "I.ConstructType",
+          "description": "Type of construct",
+          "status": "obsolete",
+          "outputs": {
+            "type": "string",
+            "description": "AI's concept of craft type"
+          }
+        }
+      ]
+    },
+    "using propulsion": {
+      "functions": [
+        {
+          "name": "I:TellAiThatWeAreTakingControl",
+          "description": "Stops AI from issuing propulsion commands for 1 second",
+          "inputs": null,
+          "outputs": null
+        },
+        {
+          "name": "I:AddPropulsionRequest",
+          "description": "Adds propulsion request to specified axis (additive)",
+          "inputs": {
+            "type": {
+              "type": "int",
+              "description": "Axis type",
+              "values": {
+                "Main": 0,
+                "Secondary": 1,
+                "Tertiary": 2,
+                "Roll": 3,
+                "Pitch": 4,
+                "Yaw": 5,
+                "Forwards": 6,
+                "Up": 7,
+                "Right": 8,
+                "A": 9,
+                "B": 10,
+                "C": 11,
+                "D": 12,
+                "E": 13
+              }
+            },
+            "drive": {
+              "type": "float",
+              "description": "Amount to add to axis (clamped between -1 and 1)"
+            }
+          },
+          "outputs": null
+        },
+        {
+          "name": "I:SetPropulsionRequest",
+          "description": "Sets propulsion request to specified axis (overwrites)",
+          "inputs": {
+            "type": {
+              "type": "int",
+              "description": "Axis type (same values as AddPropulsionRequest)"
+            },
+            "drive": {
+              "type": "float",
+              "description": "Amount to set axis to (clamped between -1 and 1)"
+            }
+          },
+          "outputs": null
+        },
+        {
+          "name": "I:GetPropulsionRequest",
+          "description": "Gets sum of all requests made to axis in previous frame",
+          "inputs": {
+            "type": {
+              "type": "int",
+              "description": "Axis type"
+            }
+          },
+          "outputs": {
+            "type": "float",
+            "description": "Sum of requests or current drive value"
+          }
+        },
+        {
+          "name": "I:RequestComplexControllerStimulus",
+          "description": "Requests a stimuli for complex controller block",
+          "inputs": {
+            "stim": {
+              "type": "unknown",
+              "description": "Stimulus parameter"
+            }
+          },
+          "outputs": null
+        },
+        {
+          "name": "I:MoveFortress",
+          "description": "Move fortress in any direction (limited to 1 meter)",
+          "inputs": {
+            "direction": {
+              "type": "Vector3",
+              "description": "Direction to move fortress"
+            }
+          },
+          "outputs": null
+        },
+        {
+          "name": "I:RequestCustomAxis",
+          "description": "Creates or uses custom axis",
+          "inputs": {
+            "axisName": {
+              "type": "string",
+              "description": "Name of axis (max 32 characters)"
+            },
+            "drive": {
+              "type": "float",
+              "description": "Value to add to axis (clamped -1 to 1)"
+            }
+          },
+          "outputs": null
+        },
+        {
+          "name": "I:GetCustomAxis",
+          "description": "Gets value of custom axis",
+          "inputs": {
+            "axisName": {
+              "type": "string",
+              "description": "Name of axis to get value for"
+            }
+          },
+          "outputs": {
+            "type": "float",
+            "description": "Value of axis (0 if not created)"
+          }
+        }
+      ]
+    },
+    "Accessing Target Info": {
+      "functions": [
+        {
+          "name": "I:GetNumberOfMainframes",
+          "description": "Returns number of mainframes on vehicle",
+          "inputs": null,
+          "outputs": {
+            "type": "int",
+            "description": "Number of mainframes"
+          }
+        },
+        {
+          "name": "I:GetNumberOfTargets",
+          "description": "Returns number of targets in mainframe",
+          "inputs": {
+            "mainframeIndex": {
+              "type": "int",
+              "description": "Index of mainframe"
+            }
+          },
+          "outputs": {
+            "type": "int",
+            "description": "Number of targets (0 if mainframe doesn't exist)"
+          }
+        },
+        {
+          "name": "I:GetTargetInfo",
+          "description": "Gets target information",
+          "inputs": {
+            "mainframeIndex": {
+              "type": "int",
+              "description": "0 being first mainframe"
+            },
+            "targetIndex": {
+              "type": "int",
+              "description": "0 being first target (highest priority if prioritization active)"
+            }
+          },
+          "outputs": {
+            "type": "TargetInfo",
+            "description": "Target information object"
+          }
+        },
+        {
+          "name": "I:GetTargetPositionInfo",
+          "description": "Gets target position information",
+          "inputs": {
+            "mainframeIndex": {
+              "type": "int",
+              "description": "0 being first mainframe"
+            },
+            "targetIndex": {
+              "type": "int",
+              "description": "0 being first target"
+            }
+          },
+          "outputs": {
+            "type": "TargetPositionInfo",
+            "description": "Target position information object"
+          }
+        },
+        {
+          "name": "I:GetTargetPositionInfoForPosition",
+          "description": "Gets target position info for specific coordinates",
+          "inputs": {
+            "mainframeIndex": {
+              "type": "int",
+              "description": "0 being first mainframe"
+            },
+            "x": {
+              "type": "float",
+              "description": "East-west position in meters"
+            },
+            "y": {
+              "type": "float",
+              "description": "Up-down position in meters (0 is sea level)"
+            },
+            "z": {
+              "type": "float",
+              "description": "North-south position in meters"
+            }
+          },
+          "outputs": {
+            "type": "TargetPositionInfo",
+            "description": "Target position info for the specified point"
+          }
+        }
+      ],
+      "data_types": {
+        "TargetInfo": {
+          "Valid": {
+            "type": "bool",
+            "description": "True if target was correctly returned"
+          },
+          "Priority": {
+            "type": "int",
+            "description": "Priority level (0 is highest)"
+          },
+          "Score": {
+            "type": "float",
+            "description": "Target score from prioritization card"
+          },
+          "AimPointPosition": {
+            "type": "Vector3",
+            "description": "Position of aim point in world"
+          },
+          "Team": {
+            "type": "int",
+            "description": "Team of target"
+          },
+          "Protected": {
+            "type": "bool",
+            "description": "Is it salvage? (false for salvage)"
+          },
+          "Position": {
+            "type": "Vector3",
+            "description": "Position of target object in world"
+          },
+          "Velocity": {
+            "type": "Vector3",
+            "description": "Velocity in world space (m/s)"
+          },
+          "PlayerTargetChoice": {
+            "type": "bool",
+            "description": "Has player set this as target?"
+          },
+          "Id": {
+            "type": "int",
+            "description": "Unique integer ID of target"
+          }
+        },
+        "TargetPositionInfo": {
+          "Valid": {
+            "type": "bool",
+            "description": "True if target position info correctly returned"
+          },
+          "Azimuth": {
+            "type": "float",
+            "description": "Degrees off nose (positive is clockwise)"
+          },
+          "Elevation": {
+            "type": "float",
+            "description": "Degrees off nose (positive is downward)"
+          },
+          "ElevationForAltitudeComponentOnly": {
+            "type": "float",
+            "description": "Elevation off nose of target's altitude (robustly calculated)"
+          },
+          "Range": {
+            "type": "float",
+            "description": "Range to target"
+          },
+          "Direction": {
+            "type": "Vector3",
+            "description": "Direction to target (absolute, not normalized)"
+          },
+          "GroundDistance": {
+            "type": "float",
+            "description": "Distance along ground to target (ignoring vertical)"
+          },
+          "AltitudeAboveSeaLevel": {
+            "type": "float",
+            "description": "Altitude above sea level in meters"
+          },
+          "Position": {
+            "type": "Vector3",
+            "description": "Position of target"
+          }
+        }
+      }
+    },
+    "misc_functions": {
+      "functions": [
+        {
+          "name": "I:GetTerrainAltitudeForPosition",
+          "description": "Gets terrain altitude at world position",
+          "inputs": {
+            "x": {
+              "type": "float",
+              "description": "East-west position in meters"
+            },
+            "y": {
+              "type": "float",
+              "description": "Vertical position (not important)"
+            },
+            "z": {
+              "type": "float",
+              "description": "North-south position in meters"
+            }
+          },
+          "outputs": {
+            "type": "float",
+            "description": "Terrain altitude in meters (0 is sea level)"
+          }
+        },
+        {
+          "name": "I:GetTerrainAltitudeForLocalPosition",
+          "description": "Gets terrain altitude at position relative to construct",
+          "inputs": {
+            "x": {
+              "type": "float",
+              "description": "Right offset from construct in meters"
+            },
+            "y": {
+              "type": "float",
+              "description": "Up offset from construct in meters"
+            },
+            "z": {
+              "type": "float",
+              "description": "Forward offset from construct in meters"
+            }
+          },
+          "outputs": {
+            "type": "float",
+            "description": "Terrain altitude in meters (0 is sea level)"
+          },
+          "notes": "Can be overloaded with single Vector3"
+        },
+        {
+          "name": "I:GetGravityForAltitude",
+          "description": "Returns gravity vector for altitude",
+          "inputs": {
+            "alt": {
+              "type": "float",
+              "description": "Altitude (0 is sea level)"
+            }
+          },
+          "outputs": {
+            "type": "Vector3",
+            "description": "Gravity vector (Y component is of interest)"
+          }
+        },
+        {
+          "name": "I:GetTime",
+          "description": "Returns time with arbitrary offset",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Time in seconds (seldom 0)"
+          }
+        },
+        {
+          "name": "I:GetTimeSinceSpawn",
+          "description": "Returns time since construct spawned",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Time in seconds since spawn"
+          }
+        },
+        {
+          "name": "I:GetGameTime",
+          "description": "Returns time since instance started",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Time in seconds since instance started"
+          }
+        },
+        {
+          "name": "I:GetWindDirectionAndMagnitude",
+          "description": "Get current wind direction and magnitude",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Vector representing wind direction and magnitude"
+          }
+        }
+      ]
+    },
+    "self_awareness": {
+      "position_functions": [
+        {
+          "name": "I:GetConstructPosition",
+          "description": "Returns position of construct",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Position of construct (first block placed or raft center)"
+          }
+        },
+        {
+          "name": "I:GetConstructCenterOfMass",
+          "description": "Returns world position of construct's center of mass",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "World position of center of mass"
+          }
+        },
+        {
+          "name": "I:GetConstructLocalCenterOfMass",
+          "description": "Returns local position of construct's center of mass",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Local position of center of mass (rounded to 50cm increments)"
+          }
+        },
+        {
+          "name": "I:GetAiPosition",
+          "description": "Returns position of AI mainframe",
+          "inputs": {
+            "mainframeIndex": {
+              "type": "int",
+              "description": "0 is first mainframe"
+            }
+          },
+          "outputs": {
+            "type": "Vector3",
+            "description": "Position of AI mainframe"
+          }
+        }
+      ],
+      "orientation_functions": [
+        {
+          "name": "I:GetConstructForwardVector",
+          "description": "Returns forward pointing vector of construct",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Forward vector (length 1)"
+          }
+        },
+        {
+          "name": "I:GetConstructRightVector",
+          "description": "Returns right pointing vector of construct",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Right vector (length 1)"
+          }
+        },
+        {
+          "name": "I:GetConstructUpVector",
+          "description": "Returns up pointing vector of construct",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Up vector (length 1)"
+          }
+        },
+        {
+          "name": "I:GetConstructRoll",
+          "description": "Returns roll angle",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Roll angle in degrees"
+          }
+        },
+        {
+          "name": "I:GetConstructPitch",
+          "description": "Returns pitch angle",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Pitch angle in degrees"
+          }
+        },
+        {
+          "name": "I:GetConstructYaw",
+          "description": "Returns yaw angle",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Yaw angle in degrees"
+          }
+        }
+      ],
+      "dimensions_functions": [
+        {
+          "name": "I:GetConstructMaxDimensions",
+          "description": "Returns size of vehicle right/up/forward of origin",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Size in positive directions from origin"
+          }
+        },
+        {
+          "name": "I:GetConstructMinDimensions",
+          "description": "Returns size of vehicle left/down/back of origin",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Size in negative directions from origin"
+          }
+        }
+      ],
+      "velocity_functions": [
+        {
+          "name": "I:GetVelocityMagnitude",
+          "description": "Returns magnitude of velocity",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Velocity magnitude in m/s"
+          }
+        },
+        {
+          "name": "I:GetForwardsVelocityMagnitude",
+          "description": "Returns forward velocity component",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Forward velocity in m/s (negative means going backward)"
+          }
+        },
+        {
+          "name": "I:GetVelocityVector",
+          "description": "Returns velocity vector in world space",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Velocity vector in world space (m/s)"
+          }
+        },
+        {
+          "name": "I:GetVelocityVectorNormalized",
+          "description": "Returns normalized velocity vector",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Normalized velocity vector (length 1)"
+          }
+        },
+        {
+          "name": "I:GetAngularVelocity",
+          "description": "Returns angular velocity in world space",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Angular velocity (X=east-west axis, Y=vertical axis, Z=north-south axis)"
+          }
+        },
+        {
+          "name": "I:GetLocalAngularVelocity",
+          "description": "Returns angular velocity in local space",
+          "inputs": null,
+          "outputs": {
+            "type": "Vector3",
+            "description": "Local angular velocity (X=pitch, Y=yaw, Z=roll)"
+          }
+        }
+      ],
+      "resource_functions": [
+        {
+          "name": "I:GetAmmoFraction",
+          "description": "Returns fraction of ammo remaining",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Ammo fraction (0-1, 1 if no ammo storage)"
+          }
+        },
+        {
+          "name": "I:GetFuelFraction",
+          "description": "Returns fraction of fuel remaining",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Fuel fraction (0-1, 1 if no fuel storage)"
+          }
+        },
+        {
+          "name": "I:GetSparesFraction",
+          "description": "Returns fraction of spares remaining",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Spares fraction (0-1, 1 if no spares storage)"
+          }
+        },
+        {
+          "name": "I:GetEnergyFraction",
+          "description": "Returns fraction of energy remaining",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Energy fraction (0-1, 1 if no batteries)"
+          }
+        },
+        {
+          "name": "I:GetPowerFraction",
+          "description": "Returns fraction of power remaining",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Power fraction (0-1)"
+          }
+        },
+        {
+          "name": "I:GetElectricPowerFraction",
+          "description": "Returns fraction of electric power remaining",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Electric power fraction (0-1)"
+          }
+        },
+        {
+          "name": "I:GetHealthFraction",
+          "description": "Returns fraction of health remaining",
+          "inputs": null,
+          "outputs": {
+            "type": "float",
+            "description": "Health fraction (0-1, 1 if full health)"
+          }
+        },
+        {
+          "name": "I:GetHealthFractionDifference",
+          "description": "Returns health difference over specified time",
+          "inputs": {
+            "time": {
+              "type": "float",
+              "description": "Time period to measure (limited 1-30 seconds)"
+            }
+          },
+          "outputs": {
+            "type": "float",
+            "description": "Health difference as fraction (0-1)"
+          }
+        }
+      ],
+      "status_functions": [
+        {
+          "name": "I:IsDocked",
+          "description": "Returns whether vehicle is docked",
+          "inputs": null,
+          "outputs": {
+            "type": "bool",
+            "description": "True if docked"
+          }
+        },
+        {
+          "name": "I:GetBlueprintName",
+          "description": "Returns name of blueprint",
+          "inputs": null,
+          "outputs": {
+            "type": "string",
+            "description": "Name of the blueprint"
+          }
+        },
+        {
+          "name": "I:GetUniqueId",
+          "description": "Returns unique ID",
+          "inputs": null,
+          "outputs": {
+            "type": "int",
+            "description": "Unique ID"
+          }
+        }
+      ]
+    },
+    "components": {
+      "0": {
+        "name": "balloon_deployer",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "Get whether the balloon is deployed / True to deploy the balloon, False to sever the balloon"
+          }
+        }
+      },
+      "1": {
+        "name": "drive_maintainer",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get/set the channel of the drive maintainer (0 = Primary, 1 = Secondary, 2 = Tertiary)"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set the drive that the drive maintainer is set to"
+          }
+        }
+      },
+      "2": {
+        "name": "all_pumps_helium_and_air",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "Get whether the pump is on (buoyancy fraction > 0) / False sets buoyancy fraction to 0, True sets buoyancy fraction to 1"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set buoyancy fraction"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get fraction of volume that is flooded"
+          }
+        }
+      },
+      "3": {
+        "name": "resource_gatherer",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "On/off"
+          }
+        }
+      },
+      "4": {
+        "name": "drill",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "On/off"
+          }
+        }
+      },
+      "5": {
+        "name": "ammo_processor",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "On/off"
+          }
+        }
+      },
+      "6": {
+        "name": "fuel_refinery",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "On/off"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get dangerous gas level"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get refining efficiency"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get time per batch"
+          }
+        }
+      },
+      "7": {
+        "name": "tractor_beams",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "On/off"
+          },
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get the unique id of the selected vehicle (-1 if nothing is selected) / Select the vehicle with the specified unique id"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set hold distance"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set hold azimuth"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set hold elevation"
+          }
+        }
+      },
+      "8": {
+        "name": "hydrofoils",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set angle"
+          }
+        }
+      },
+      "9": {
+        "name": "propulsion",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set drive fraction"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get propulsion requests to this component so far this frame / Add a propulsion request to this component"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get total propulsion request to this component last frame"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Max force of this component"
+          }
+        }
+      },
+      "10": {
+        "name": "shield_projector",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get"],
+            "description": "Get whether the shield is functioning"
+          },
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get/set the shield type (0 = off, 1 = reflect, 2 = disrupt, 3 = laser absorb)"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set strength"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set azimuth"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set elevation"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set range"
+          },
+          "float_4": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set width"
+          },
+          "float_5": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set (property unclear from OCR)"
+          },
+          "float_6": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set alpha"
+          },
+          "float_7": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_8": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set green"
+          },
+          "float_9": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set blue"
+          }
+        }
+      },
+      "11": {
+        "name": "helium_pump",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "Get whether the airpump is on (buoyancy fraction > 0) / False sets buoyancy fraction to 0, True sets buoyancy fraction to 1"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set buoyancy fraction"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get fraction of volume that is flooded"
+          }
+        }
+      },
+      "12": {
+        "name": "spotlight",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set cone angle"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set azimuth angle"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set elevation angle"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set intensity"
+          },
+          "float_4": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set (property unclear from OCR)"
+          },
+          "float_5": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_6": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set green"
+          },
+          "float_7": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set blue"
+          }
+        }
+      },
+      "13": {
+        "name": "advanced_cannon_laser_targetter",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get"],
+            "description": "Get the weapon index of the firing piece it is attached to (-1 otherwise)"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set (property unclear from OCR)"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get altitude fuse 'low' altitude / Set altitude fuse altitude"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get altitude fuse 'high' altitude"
+          }
+        }
+      },
+      "14": {
+        "name": "cram_cannon_laser_targetter",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get"],
+            "description": "Get the weapon index of the firing piece it is attached to (-1 otherwise)"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set timed fuse time"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get altitude fuse 'low' altitude / Set altitude fuse altitude"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get altitude fuse 'high' altitude"
+          }
+        }
+      },
+      "15": {
+        "name": "warp_drive",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get"],
+            "description": "Is charging"
+          },
+          "int_0": {
+            "type": "int",
+            "operations": ["set"],
+            "description": "0 = start charging"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Right jump distance"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Up jump distance"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Forwards jump distance"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Right jump factor"
+          },
+          "float_4": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Up jump factor"
+          },
+          "float_5": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Forwards jump factor"
+          },
+          "float_6": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Total length of attached chargers"
+          },
+          "float_7": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Charge duration"
+          }
+        }
+      },
+      "16": {
+        "name": "particle_cannon_lense",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get"],
+            "description": "Get the weapon index of the firing piece it is attached to (-1 otherwise)"
+          }
+        }
+      },
+      "17": {
+        "name": "steam_boiler_controller",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set burn rate"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Volume of attached boiler"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Pressure of attached boiler"
+          }
+        }
+      },
+      "18": {
+        "name": "fuel_engine_generator",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set max relative rpm"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set battery charge drive"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Current relative rpm"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Estimate of maximum power"
+          },
+          "float_4": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Fuel usage per second"
+          }
+        }
+      },
+      "19": {
+        "name": "sail_main_block",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get"],
+            "description": "Get the sail type (0 = three point sail, 1 = square rigged sail)"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Mast winch setting / Winch mast towards this setting"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Boom winch setting / Winch boom towards this setting"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Mast height"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Boom length"
+          }
+        }
+      },
+      "20": {
+        "name": "advanced_cannon_ammo_intake",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get unique id of the associated ammo controller (-1 otherwise) / Select an ammo controller by its unique id"
+          },
+          "int_1": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get component index of the associated ammo controller (-1 otherwise) / Select an ammo controller by its component index"
+          },
+          "int_2": {
+            "type": "int",
+            "operations": ["get"],
+            "description": "Get (property unclear from OCR)"
+          }
+        }
+      },
+      "21": {
+        "name": "advanced_cannon_ammo_controller",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get"],
+            "description": "Get unique id"
+          }
+        }
+      },
+      "22": {
+        "name": "ai_wireless_transmitter",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get/set channel"
+          }
+        }
+      },
+      "23": {
+        "name": "ai_wireless_receiver",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get/set channel"
+          }
+        }
+      },
+      "24": {
+        "name": "ai_aimpoint_selection_card",
+        "properties": {
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "Get/set aimpoint selection type (0 = random, 1 = ammo and AI)"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set retarget time"
+          }
+        }
+      },
+      "25": {
+        "name": "detection_component",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "On/off"
+          },
+          "int_0": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "AI movement mode (0 = Off, 1 = Manual, 2 = Automatic, 3 = Fleet)"
+          },
+          "int_1": {
+            "type": "int",
+            "operations": ["get", "set"],
+            "description": "AI firing mode (0 = Off, 1 = On)"
+          }
+        }
+      },
+      "27": {
+        "name": "laser_colorer",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set green"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set blue"
+          }
+        }
+      },
+      "28": {
+        "name": "laser_missile_defence",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set green"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set blue"
+          }
+        }
+      },
+      "29": {
+        "name": "particle_cannon",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set green"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set blue"
+          }
+        }
+      },
+      "30": {
+        "name": "light_fitting",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set intensity"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set range"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set green"
+          },
+          "float_4": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set blue"
+          }
+        }
+      },
+      "31": {
+        "name": "component_31",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set (property unclear from OCR)"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set (property unclear from OCR)"
+          }
+        }
+      },
+      "32": {
+        "name": "smoke_generator",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set particle speed"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set particle size"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set red"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set green"
+          },
+          "float_4": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set blue"
+          }
+        }
+      },
+      "33": {
+        "name": "hologram_projector",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "On/off"
+          },
+          "bool_1": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "Get/set whether the image is mirrored"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set width"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set height"
+          },
+          "float_2": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set distance"
+          },
+          "float_3": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set right translation"
+          },
+          "float_4": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set up translation"
+          },
+          "float_5": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set azimuth"
+          },
+          "float_6": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set elevation"
+          },
+          "float_7": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set rotation"
+          }
+        }
+      },
+      "34": {
+        "name": "poster_holder",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set width"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set height"
+          }
+        }
+      },
+      "35": {
+        "name": "electric_engine",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set power fraction"
+          }
+        }
+      },
+      "36": {
+        "name": "steam_boiler_controller",
+        "properties": {
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set burn rate"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get storage module pressure"
+          }
+        }
+      },
+      "37": {
+        "name": "air_pump",
+        "properties": {
+          "bool_0": {
+            "type": "bool",
+            "operations": ["get", "set"],
+            "description": "Get whether the airpump is on (buoyancy fraction > 0) / False sets buoyancy fraction to 0, True sets buoyancy fraction to 1"
+          },
+          "float_0": {
+            "type": "float",
+            "operations": ["get", "set"],
+            "description": "Get/set buoyancy fraction"
+          },
+          "float_1": {
+            "type": "float",
+            "operations": ["get"],
+            "description": "Get fraction of volume that is flooded"
+          }
+        }
+      },
+
+      "block_info": {
+        "valid": {
+          "type": "bool",
+          "description": "false means this BlockInfo packet is useless"
+        },
+        "position": {
+          "type": "Vector3",
+          "description": "position in world (east, up, north)"
+        },
+        "local_position": {
+          "type": "Vector3",
+          "description": "position in construct (right, up, forwards)"
+        },
+        "local_position_relative_to_com": {
+          "type": "Vector3",
+          "description": "local position relative to the center of mass"
+        },
+        "forwards": {
+          "type": "Vector3",
+          "description": "forwards direction in world (east, up, north)"
+        },
+        "local_forwards": {
+          "type": "Vector3",
+          "description": "forward direction in construct (right, up, forwards)"
+        },
+        "rotation": {
+          "type": "Quaternion",
+          "description": "the rotation of the block in world coordinates"
+        },
+        "local_rotation": {
+          "type": "Quaternion",
+          "description": "the rotation of the block in the vehicle's (or turret's) coordinate system"
+        },
+        "sub_construct_identifier": {
+          "type": "int",
+          "description": "the sub construct identifier of the subconstruct the block is part of"
+        },
+        "custom_name": {
+          "type": "string",
+          "description": "the custom name assigned to the block"
+        }
+      },
+
+      "interface_functions": {
+        "IComponent_GetCount": {
+          "inputs": {
+            "type": "int"
+          },
+          "outputs": {
+            "count": "int"
+          },
+          "description": "Returns the number of components of this type"
+        },
+        "IComponent_GetLocalPosition": {
+          "inputs": {
+            "type": "int",
+            "index": "int"
+          },
+          "outputs": {
+            "position": "Vector3"
+          },
+          "description": "Returns the local position in the vehicle of this component"
+        },
+        "IComponent_GetBlockInfo": {
+          "inputs": {
+            "type": "int",
+            "index": "int"
+          },
+          "outputs": {
+            "block_info": "BlockInfo"
+          },
+          "description": "Returns an extensive BlockInfo object for the component"
+        },
+        "IComponent_GetBoolLogic": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int"
+          },
+          "outputs": {
+            "value": "bool"
+          },
+          "description": "Returns the first boolean logic for this component. Default return is false."
+        },
+        "IComponent_GetBoolLogic_I": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex": "int"
+          },
+          "outputs": {
+            "value": "bool"
+          },
+          "description": "Returns the specified boolean logic for this component. Default return is false."
+        },
+        "IComponent_SetBoolLogic": {
+          "inputs": {
+            "type": "int",
+            "index": "int",
+            "bool": "bool"
+          },
+          "outputs": null,
+          "description": "Sets the first boolean logic for a component"
+        },
+        "IComponent_SetBoolLogic_I": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex": "int",
+            "bool": "bool"
+          },
+          "outputs": null,
+          "description": "Sets the specified boolean logic for a component"
+        },
+        "IComponent_GetFloatLogic": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int"
+          },
+          "outputs": {
+            "value": "float"
+          },
+          "description": "Returns the first floating point value for a component. Default return is 0."
+        },
+        "IComponent_GetFloatLogic_I": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex": "int"
+          },
+          "outputs": {
+            "value": "float"
+          },
+          "description": "Returns the specified floating point value for a component. Default return is 0."
+        },
+        "IComponent_SetFloatLogic": {
+          "inputs": {
+            "type": "int",
+            "index": "int",
+            "float": "float"
+          },
+          "outputs": null,
+          "description": "Sets the first float logic for a component"
+        },
+        "IComponent_SetFloatLogic_I": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex": "int",
+            "float": "float"
+          },
+          "outputs": null,
+          "description": "Sets the specified float logic for a component"
+        },
+        "IComponent_SetFloatLogic_2": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex1": "int",
+            "float1": "float",
+            "propertyIndex2": "int",
+            "float2": "float"
+          },
+          "outputs": null,
+          "description": "Sets the two specified float logics for a component"
+        },
+        "IComponent_SetFloatLogic_3": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex1": "int",
+            "float1": "float",
+            "propertyIndex2": "int",
+            "float2": "float",
+            "propertyIndex3": "int",
+            "float3": "float"
+          },
+          "outputs": null,
+          "description": "Sets the three specified float logics for a component"
+        },
+        "IComponent_GetIntLogic": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int"
+          },
+          "outputs": {
+            "value": "int"
+          },
+          "description": "Returns the first integer value for a component. Default return is 0."
+        },
+        "IComponent_GetIntLogic_I": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex": "int"
+          },
+          "outputs": {
+            "value": "int"
+          },
+          "description": "Returns the specified integer value for a component. Default return is 0."
+        },
+        "IComponent_SetIntLogic": {
+          "inputs": {
+            "type": "int",
+            "index": "int",
+            "int": "int"
+          },
+          "outputs": null,
+          "description": "Sets the first int logic for a component"
+        },
+        "IComponent_SetIntLogic_I": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex": "int",
+            "int": "int"
+          },
+          "outputs": null,
+          "description": "Sets the specified int logic for a component"
+        },
+        "IComponent_SetIntLogic_2": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex1": "int",
+            "int1": "int",
+            "propertyIndex2": "int",
+            "int2": "int"
+          },
+          "outputs": null,
+          "description": "Sets the two specified int logics for a component"
+        },
+        "IComponent_SetIntLogic_3": {
+          "inputs": {
+            "type": "int",
+            "blockIndex": "int",
+            "propertyIndex1": "int",
+            "int1": "int",
+            "propertyIndex2": "int",
+            "int2": "int",
+            "propertyIndex3": "int",
+            "int3": "int"
+          },
+          "outputs": null,
+          "description": "Sets the three specified int logics for a component"
+        },
+        "IComponent_SetBoolLogicAll": {
+          "inputs": {
+            "type": "int",
+            "bool": "bool"
+          },
+          "outputs": null,
+          "description": "Sets the first boolean logic for all components of a specific type"
+        },
+        "IComponent_SetBoolLogicAll_I": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex": "int",
+            "bool": "bool"
+          },
+          "outputs": null,
+          "description": "Sets the specified boolean logic for all components of a specific type"
+        },
+        "IComponent_SetBoolLogicAll_2": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex1": "int",
+            "bool1": "bool",
+            "propertyIndex2": "int",
+            "bool2": "bool"
+          },
+          "outputs": null,
+          "description": "Sets the two specified boolean logics for all components of a specific type"
+        },
+        "IComponent_SetBoolLogicAll_3": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex1": "int",
+            "bool1": "bool",
+            "propertyIndex2": "int",
+            "bool2": "bool",
+            "propertyIndex3": "int",
+            "bool3": "bool"
+          },
+          "outputs": null,
+          "description": "Sets the three specified boolean logics for all components of a specific type"
+        },
+        "IComponent_SetFloatLogicAll": {
+          "inputs": {
+            "type": "int",
+            "float": "float"
+          },
+          "outputs": null,
+          "description": "Sets the first floating point logic for all components of a specific type"
+        },
+        "IComponent_SetFloatLogicAll_I": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex": "int",
+            "float": "float"
+          },
+          "outputs": null,
+          "description": "Sets the specified floating point logic for all components of a specific type"
+        },
+        "IComponent_SetFloatLogicAll_2": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex1": "int",
+            "float1": "float",
+            "propertyIndex2": "int",
+            "float2": "float"
+          },
+          "outputs": null,
+          "description": "Sets the two specified floating point logics for all components of a specific type"
+        },
+        "IComponent_SetFloatLogicAll_3": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex1": "int",
+            "float1": "float",
+            "propertyIndex2": "int",
+            "float2": "float",
+            "propertyIndex3": "int",
+            "float3": "float"
+          },
+          "outputs": null,
+          "description": "Sets the three specified floating point logics for all components of a specific type"
+        },
+        "IComponent_SetIntLogicAll": {
+          "inputs": {
+            "type": "int",
+            "int": "int"
+          },
+          "outputs": null,
+          "description": "Sets the first integer logic for all components of a specific type"
+        },
+        "IComponent_SetIntLogicAll_I": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex": "int",
+            "int": "int"
+          },
+          "outputs": null,
+          "description": "Sets the specified integer logic for all components of a specific type"
+        },
+        "IComponent_SetIntLogicAll_2": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex1": "int",
+            "int1": "int",
+            "propertyIndex2": "int",
+            "int2": "int"
+          },
+          "outputs": null,
+          "description": "Sets the two specified integer logics for all components of a specific type"
+        },
+        "IComponent_SetIntLogicAll_3": {
+          "inputs": {
+            "type": "int",
+            "propertyIndex1": "int",
+            "int1": "int",
+            "propertyIndex2": "int",
+            "int2": "int",
+            "propertyIndex3": "int",
+            "int3": "int"
+          },
+          "outputs": null,
+          "description": "Sets the three specified integer logics for all components of a specific type"
+        },
+        "SetHologramProjectorURL": {
+          "inputs": {
+            "index": "int",
+            "url": "string"
+          },
+          "outputs": null,
+          "description": "Sets the url of the specified hologram projector"
+        },
+        "SetPosterHolderURL": {
+          "inputs": {
+            "index": "int",
+            "url": "string"
+          },
+          "outputs": null,
+          "description": "Sets the url of the specified poster holder"
+        }
+      }
+    },
+    "weapons": {
+      "functions": [
+        {
+          "name": "GetWeaponCount",
+          "inputs": [
+            {
+              "name": "null",
+              "type": "null",
+              "description": "null"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "null",
+              "type": "int",
+              "description": "the number of weapons on the hull- doesn't include weapons on the turrets but does include the turrets themselves."
+            }
+          ]
+        },
+        {
+          "name": "getweaponinfo",
+          "inputs": [
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "the index of the weapon you want information on. 0 is the first weapon"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "weaponinfo",
+              "type": "weaponinfo",
+              "description": "information on the weapon. weaponinfo valid is false if you ask for an invalid weaponindex"
+            }
+          ]
+        },
+        {
+          "name": "getweaponconstraints",
+          "inputs": [
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "the index of the weapon you want the constraints of. 0 is the first weapon"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "weaponconstraints",
+              "type": "weaponconstraints",
+              "description": "information on the field-of-fire constraints of the weapon"
+            }
+          ]
+        },
+        {
+          "name": "getweaponblockinfo",
+          "inputs": [
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "the index of the weapon you want information on. 0 is the first weapon"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "blockinfo",
+              "type": "blockinfo",
+              "description": "the block information of the main component of the weapon"
+            }
+          ]
+        },
+        {
+          "name": "aimweaponindirection",
+          "inputs": [
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "0 is the first weapon"
+            },
+            {
+              "name": "x",
+              "type": "float",
+              "description": "world coordinate scheme direction component"
+            },
+            {
+              "name": "y",
+              "type": "float",
+              "description": "world coordinate scheme direction component"
+            },
+            {
+              "name": "z",
+              "type": "float",
+              "description": "world coordinate scheme direction component"
+            },
+            {
+              "name": "weaponslot",
+              "type": "int",
+              "description": "0 for all; otherwise 1 to 5"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "count",
+              "type": "int",
+              "description": "the number of weapons that can fire in this direction. 0 for none"
+            }
+          ]
+        },
+        {
+          "name": "fireweapon",
+          "inputs": [
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "0 is the first weapon"
+            },
+            {
+              "name": "weaponslot",
+              "type": "int",
+              "description": "0 will control all weapons"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "result",
+              "type": "bool",
+              "description": "won't fire if they can't fire in the direction they are"
+            }
+          ]
+        }
+      ],
+      "structures": {
+        "weaponinfo": {
+          "fields": [
+            {
+              "name": "valid",
+              "type": "bool",
+              "description": "false means this weaponinfo packet is useless"
+            },
+            {
+              "name": "globalposition",
+              "type": "vector3",
+              "description": "the global position of the weapon: x is east; y is up and z is north"
+            },
+            {
+              "name": "localfirepoint",
+              "type": "vector3",
+              "description": "the local position in the vehicle where the projectile or laser will be created"
+            },
+            {
+              "name": "globalfirepoint",
+              "type": "vector3",
+              "description": "the global position in the world where the projectile or laser will be created"
+            },
+            {
+              "name": "speed",
+              "type": "float",
+              "description": "the speed in meters per second of the weapon approximately correct for most weapon types"
+            },
+            {
+              "name": "currentdirection",
+              "type": "vector3",
+              "description": "the direction in global coordinate system that the weapon is facing"
+            },
+            {
+              "name": "weapontype",
+              "type": "int",
+              "description": "the type of the weapon: cannon = 0, missile = 1, laser = 2, harpoon = 3, turret = 4, missilecontrol = 5, firecontrolcomputer = 6"
+            },
+            {
+              "name": "weaponslot",
+              "type": "int",
+              "description": "the weapon slot of the weapon itself: 0 > 5"
+            },
+            {
+              "name": "weaponslotmask",
+              "type": "int",
+              "description": "the weapon slot bit mask. the rightmost bit represents 'all' and is always on, and the second bit represents slot 1, etc"
+            }
+          ]
+        },
+        "weaponconstraints": {
+          "fields": [
+            {
+              "name": "valid",
+              "type": "bool",
+              "description": "false means this weaponconstraints packet is useless"
+            },
+            {
+              "name": "minazimuth",
+              "type": "float",
+              "description": "the minimum azimuth angle in degrees"
+            },
+            {
+              "name": "maxazimuth",
+              "type": "float",
+              "description": "the maximum azimuth angle in degrees"
+            },
+            {
+              "name": "minelevation",
+              "type": "float",
+              "description": "the minimum elevation angle in degrees"
+            },
+            {
+              "name": "maxelevation",
+              "type": "float",
+              "description": "the maximum elevation angle in degrees"
+            },
+            {
+              "name": "flipazimuth",
+              "type": "bool",
+              "description": "true if the 'flip azimuth constraints' toggle is selected"
+            },
+            {
+              "name": "inparentconstructspace",
+              "type": "bool",
+              "description": "true if the 'set the restrictions in the parent construct space' toggle is selected"
+            }
+          ]
+        }
+      },
+      "subconstruct_functions": [
+        {
+          "name": "getweaponcountonsubconstruct",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "this identifier never changes in the blueprint"
+            }
+          ]
+        },
+        {
+          "name": "getweaponinfoonsubconstruct",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "this identifier never changes in the blueprint"
+            },
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "the index of the weapon: 0 is the first one"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "weaponinfo",
+              "type": "weaponinfo",
+              "description": "a weaponinfo object"
+            }
+          ]
+        },
+        {
+          "name": "getweaponconstraintsonsubconstruct",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "this identifier never changes in the blueprint"
+            },
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "the index of the weapon: 0 is the first one"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "weaponconstraints",
+              "type": "weaponconstraints",
+              "description": "information on the field-of-fire constraints of the weapon"
+            }
+          ]
+        },
+        {
+          "name": "getweaponblockinfoonsubconstruct",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "this identifier never changes in the blueprint"
+            },
+            {
+              "name": "weaponindex",
+              "type": "int",
+              "description": "the index of the weapon: 0 is the first one"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "blockinfo",
+              "type": "blockinfo",
+              "description": "the block information of the main component of the weapon"
+            }
+          ]
+        },
+        {
+          "name": "aimweaponindirectiononsubconstruct",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "the subconstruct identifier"
+            }
+          ],
+          "description": "aims a specific weapon on the turret without aiming the turret"
+        },
+        {
+          "name": "fireweapononsubconstruct",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "the subconstruct identifier"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "result",
+              "type": "bool",
+              "description": "weapons that you aim them first as they won't fire if they can't fire in the direction they are"
+            }
+          ]
+        }
+      ]
+    },
+    "missile_warning": {
+      "functions": [
+        {
+          "name": "getnumberofwarnings",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "count",
+              "type": "int",
+              "description": "the number of missiles warned on"
+            }
+          ],
+          "description": "return the number of missiles the construct has warnings for"
+        },
+        {
+          "name": "getmissilewarning",
+          "inputs": [
+            {
+              "name": "missileindex",
+              "type": "int",
+              "description": "the index of the missile"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "missilewarninginfo",
+              "type": "missilewarninginfo",
+              "description": "information on the missile. missilewarninginfo valid is false if you didn't request an existing missile index"
+            }
+          ],
+          "description": "request information on a specific missile warning"
+        }
+      ],
+      "structures": {
+        "missilewarninginfo": {
+          "fields": [
+            {
+              "name": "valid",
+              "type": "bool",
+              "description": "false if the warning is junk due to incorrect indices"
+            },
+            {
+              "name": "position",
+              "type": "vector3",
+              "description": "the position of the missile"
+            },
+            {
+              "name": "velocity",
+              "type": "vector3",
+              "description": "the velocity of the missile in meters per second"
+            },
+            {
+              "name": "range",
+              "type": "float",
+              "description": "the distance from centre of mass of your construct to the missile"
+            },
+            {
+              "name": "azimuth",
+              "type": "float",
+              "description": "the azimuth angle between your construct's forward direction and the missile (degrees)"
+            },
+            {
+              "name": "elevation",
+              "type": "float",
+              "description": "the elevation angle between your construct's forward direction and the missile (degrees)"
+            },
+            {
+              "name": "timesincelaunch",
+              "type": "float",
+              "description": "the time since missile launch"
+            },
+            {
+              "name": "id",
+              "type": "int",
+              "description": "the unique id of the missile"
+            }
+          ]
+        }
+      }
+    },
+    "missile_guidance": {
+      "functions": [
+        {
+          "name": "getluatransceivercount",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "count",
+              "type": "int",
+              "description": "the number of luatransceivers"
+            }
+          ],
+          "description": "return the number of luatransceivers. each transceiver can have a number of missiles which are controllable"
+        },
+        {
+          "name": "getluacontrolledmissilecount",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int",
+              "description": "the index of the luatransceiver where 0 is the first one"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "count",
+              "type": "int",
+              "description": "the number of missiles associated with that luatransceiver"
+            }
+          ],
+          "description": "returns the number of missiles which that luatransceiver has communications link to"
+        },
+        {
+          "name": "getluatransceiverinfo",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int",
+              "description": "the index of the luatransceiver where 0 is the first one"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "blockinfo",
+              "type": "blockinfo",
+              "description": "a blockinfo object for the luatransceiver's launchpad"
+            }
+          ],
+          "description": "returns a blockinfo object for the luatransceiver's launchpad. if no launch pad exists it'll return it for the luatransceiver"
+        },
+        {
+          "name": "getluacontrolledmissileinfo",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int",
+              "description": "0 is the first one"
+            },
+            {
+              "name": "missileindex",
+              "type": "int",
+              "description": "0 is the first missile"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "missilewarninginfo",
+              "type": "missilewarninginfo",
+              "description": "get a missilewarninginfo object for your missile"
+            }
+          ],
+          "description": "returns a missilewarninginfo structure for your missile. you can tell where it is and how fast it is going from this"
+        },
+        {
+          "name": "setluacontrolledmissileaimpoint",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int"
+            },
+            {
+              "name": "missileindex",
+              "type": "int"
+            },
+            {
+              "name": "x",
+              "type": "float",
+              "description": "global coordinates of the aim point"
+            },
+            {
+              "name": "y",
+              "type": "float",
+              "description": "global coordinates of the aim point"
+            },
+            {
+              "name": "z",
+              "type": "float",
+              "description": "global coordinates of the aim point"
+            }
+          ],
+          "outputs": [],
+          "description": "sets the aim point. no guidance modules will help achieve this aim point so do your own predictive guidance. needs a lua receiver component on the missile to work"
+        },
+        {
+          "name": "detonateluacontrolledmissile",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int"
+            },
+            {
+              "name": "missileindex",
+              "type": "int"
+            }
+          ],
+          "outputs": [],
+          "description": "explodes the missile. needs a lua receiver component on the missile to work"
+        },
+        {
+          "name": "isluacontrolledmissileaninterceptor",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int",
+              "description": "0 is the first one"
+            },
+            {
+              "name": "missileindex",
+              "type": "int",
+              "description": "0 is the first one"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "result",
+              "type": "bool",
+              "description": "true means the missile has an interceptor module; otherwise false is returned"
+            }
+          ],
+          "description": "find out if the missile has an interceptor capability"
+        },
+        {
+          "name": "setluacontrolledmissileinterceptortarget",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int",
+              "description": "0 is the first one"
+            },
+            {
+              "name": "missileindex",
+              "type": "int",
+              "description": "0 is the first one"
+            },
+            {
+              "name": "targetindex",
+              "type": "int",
+              "description": "0 is the first missile which that mainframe has a warning for"
+            }
+          ],
+          "outputs": [],
+          "description": "set target of an interceptor missile to be a specific missile for which a warning exists"
+        },
+        {
+          "name": "setluacontrolledmissileinterceptorstandardguidanceonoff",
+          "inputs": [
+            {
+              "name": "luatransceiverindex",
+              "type": "int",
+              "description": "0 is the first one"
+            },
+            {
+              "name": "missileindex",
+              "type": "int",
+              "description": "0 is the first one"
+            },
+            {
+              "name": "onoff",
+              "type": "bool",
+              "description": "true will use standard missile guidance to aim at the interceptor's target; false will rely on setluacontrolledmissileaimpoint for aiming coordinates"
+            }
+          ],
+          "outputs": []
+        }
+      ]
+    },
+    "spinners": {
+      "Spin Block":{
+        "functions": [
+          {
+            "name": "setspinblockspeedfactor",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              },
+              {
+                "name": "speedfactor",
+                "type": "float",
+                "description": "0 to 1, the fractional power output"
+              }
+            ],
+            "outputs": [],
+            "description": "set the speed factor. in continuous mode spinners this allows some blades to spin slower than others"
+          },
+          {
+            "name": "setspinblockpowerdrive",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              },
+              {
+                "name": "drive",
+                "type": "float",
+                "description": "the relative power use of the spinner (0 to 10)"
+              }
+            ],
+            "outputs": [],
+            "description": "sets the power drive. this allows heliblades to produce more force. requires engine power. 0 removes engine use. 10 is maximum power"
+          },
+          {
+            "name": "setspinblockrotationangle",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              },
+              {
+                "name": "angle",
+                "type": "float",
+                "description": "angle in degrees to turn to"
+              }
+            ],
+            "outputs": [],
+            "description": "sets the angle of rotation. changes the spinner into rotate mode"
+          },
+          {
+            "name": "setspinblockcontinuousspeed",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              },
+              {
+                "name": "speed",
+                "type": "float",
+                "description": "speed to rotate at. 30 is the maximum 50 values from -30 to 30 work"
+              }
+            ],
+            "outputs": [],
+            "description": "sets the speed of rotation. changes the spinner into continuous mode"
+          },
+          {
+            "name": "setspinblockinstaspin",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              },
+              {
+                "name": "magnitudeanddirection",
+                "type": "float",
+                "description": "-1 means spin backwards full speed, 1 is spin forwards full speed"
+              }
+            ],
+            "outputs": [],
+            "description": "spins the blades in a direction and speed determined by magnitudeanddirection"
+          }
+        ]
+      },
+      "pistons": {
+        "functions": [
+          {
+            "name": "getpistonextension",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "extension",
+                "type": "float",
+                "description": "the extension distance of the piston in meters"
+              }
+            ],
+            "description": "get the extension of the piston"
+          },
+          {
+            "name": "getpistonvelocity",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "velocity",
+                "type": "float",
+                "description": "the velocity of the piston in meters per second"
+              }
+            ],
+            "description": "get the velocity of the piston (always positive)"
+          },
+          {
+            "name": "setpistonextension",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              },
+              {
+                "name": "extensiondistance",
+                "type": "float",
+                "description": "the extension distance of the piston (in meters, will be clamped if necessary)"
+              }
+            ],
+            "outputs": [],
+            "description": "set the extension of the piston"
+          },
+          {
+            "name": "setpistonvelocity",
+            "inputs": [
+              {
+                "name": "subconstructidentifier",
+                "type": "int",
+                "description": "the persistent identifier of the subconstruct"
+              },
+              {
+                "name": "extensionvelocity",
+                "type": "float",
+                "description": "the velocity of the piston in meters per second (between 0.1 and 2)"
+              }
+            ],
+            "outputs": [],
+            "description": "set the velocity of the piston"
+          }
+        ]
+      },
+      "dedicated_helicopter_spinners": {
+        "functions": [
+          {
+            "name": "getdedibladecount",
+            "inputs": [],
+            "outputs": [
+              {
+                "name": "count",
+                "type": "int",
+                "description": "the number of dedicated helicopter spinners"
+              }
+            ],
+            "description": "returns the number of dedicated helicopter spinners"
+          },
+          {
+            "name": "getdedibladeinfo",
+            "inputs": [
+              {
+                "name": "dedibladeindex",
+                "type": "int",
+                "description": "0 is the first dedicated helicopter spinner"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "blockinfo",
+                "type": "blockinfo",
+                "description": "a block info object for the dedicated helicopter spinner"
+              }
+            ],
+            "description": "returns block info for the dedicated helicopter spinner"
+          },
+          {
+            "name": "isdedibladeonhull",
+            "inputs": [
+              {
+                "name": "dedibladeindex",
+                "type": "int",
+                "description": "0 is the first dedicated helicopter spinner"
+              }
+            ],
+            "outputs": [
+              {
+                "name": "result",
+                "type": "bool",
+                "description": "true if on hull"
+              }
+            ],
+            "description": "returns whether the dedicated helicopter spinner is on the hull or on a subconstruct"
+          },
+          {
+            "name": "setdedibladespeedfactor",
+            "inputs": [
+              {
+                "name": "dedibladeindex",
+                "type": "int",
+                "description": "0 is the first dedicated helicopter spinner"
+              },
+              {
+                "name": "speedfactor",
+                "type": "float",
+                "description": "0 to 1, the fractional power output"
+              }
+            ],
+            "outputs": [],
+            "description": "set the speed factor"
+          },
+          {
+            "name": "setdedibladepowerdrive",
+            "inputs": [
+              {
+                "name": "dedibladeindex",
+                "type": "int",
+                "description": "0 is the first dedicated helicopter spinner"
+              },
+              {
+                "name": "drive",
+                "type": "float",
+                "description": "the relative power use of the dedicated helicopter spinner (0 to 10)"
+              }
+            ],
+            "outputs": [],
+            "description": "sets the power drive. this allows heliblades to produce more force"
+          },
+          {
+            "name": "setdedibladecontinuousspeed",
+            "inputs": [
+              {
+                "name": "dedibladeindex",
+                "type": "int",
+                "description": "0 is the first dedicated helicopter spinner"
+              },
+              {
+                "name": "speed",
+                "type": "float",
+                "description": "speed to rotate at. 30 is the maximum 50 values from -30 to 30 work"
+              }
+            ],
+            "outputs": [],
+            "description": "sets the speed of rotation. changes the dedicated helicopter spinner into continuous mode"
+          },
+          {
+            "name": "setdedibladeinstaspin",
+            "inputs": [
+              {
+                "name": "dedibladeindex",
+                "type": "int",
+                "description": "0 is the first dedicated helicopter spinner"
+              },
+              {
+                "name": "magnitudeanddirection",
+                "type": "float",
+                "description": "-1 means spin backwards full speed, 1 is spin forwards full speed"
+              }
+            ],
+            "outputs": [],
+            "description": "spins the blades in a direction and speed determined by magnitudeanddirection"
+          },
+          {
+            "name": "setdedibladeupfraction",
+            "inputs": [
+              {
+                "name": "dedibladeindex",
+                "type": "int",
+                "description": "0 is the first dedicated helicopter spinner"
+              },
+              {
+                "name": "upfraction",
+                "type": "float",
+                "description": "0 to 1"
+              }
+            ],
+            "outputs": [],
+            "description": "sets the fraction of the force that will be applied directly upwards regardless of blade orientation"
+          }
+        ]
+      }
+    },
+    "subconstructs": {
+      "functions": [
+        {
+          "name": "getsubconstructcount",
+          "inputs": [],
+          "outputs": [
+            {
+              "name": "count",
+              "type": "int",
+              "description": "the total number of subconstructs on the vehicle"
+            }
+          ],
+          "description": "returns the number of subconstructs on the vehicle, including subconstructs on subconstructs"
+        },
+        {
+          "name": "getsubconstructidentifier",
+          "inputs": [
+            {
+              "name": "index",
+              "type": "int",
+              "description": "0 is the first subconstruct"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "identifier",
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          ],
+          "description": "returns the identifier of the subconstruct. the indices start at 0 and are in no particular order"
+        },
+        {
+          "name": "getsubconstructchildrencount",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "count",
+              "type": "int",
+              "description": "the number of subconstructs directly placed on the given subconstruct"
+            }
+          ],
+          "description": "returns the number of subconstructs on the given subconstruct"
+        },
+        {
+          "name": "getsubconstructchildidentifier",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "the persistent identifier of the parent subconstruct"
+            },
+            {
+              "name": "index",
+              "type": "int",
+              "description": "0 is the first child subconstruct"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "identifier",
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          ],
+          "description": "returns the identifier of the child subconstruct placed on the parent subconstruct"
+        },
+        {
+          "name": "getparent",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "parent",
+              "type": "int",
+              "description": "the persistent index of the parent subconstruct of the given subconstruct"
+            }
+          ],
+          "description": "returns the persistent index of the parent subconstruct of the given subconstruct; '0' for the mainconstruct, '-1' if not found"
+        },
+        {
+          "name": "isturret",
+          "inputs": [
+            {
+              "name": "subconstructidentifier",
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          ],
+          "outputs": [
+            {
+              "name": "result",
+              "type": "bool",
+              "description": "'true' if the subconstruct is a turret; 'false' otherwise"
+            }
+          ],
+          "description": "indicates if the subconstruct is a turret or not"
+        },
+        {
+
+          "name": "isspinblock",
+          "inputs": {
+            "subconstructidentifier": {
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          },
+          "outputs": {
+            "type": "bool",
+            "description": "indicates if the subconstruct is a spin block or not"
+          }
+        },
+        {
+          "name": "ispiston",
+          "inputs": {
+            "subconstructidentifier": {
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          },
+          "outputs": {
+            "type": "bool",
+            "description": "'true' if the subconstruct is a piston; 'false' otherwise"
+          },
+          "purpose": "indicates if the subconstruct is a piston or not"
+        },
+        {
+          "name": "isalive",
+          "inputs": {
+            "subconstructidentifier": {
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          },
+          "outputs": {
+            "type": "bool",
+            "description": "'true' if the subconstruct is not completely destroyed"
+          },
+          "purpose": "indicates if the subconstruct is destroyed or not"
+        },
+        {
+          "name": "isonhull",
+          "inputs": {
+            "subconstructidentifier": {
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          },
+          "outputs": {
+            "type": "bool",
+            "description": "'true' if the subconstruct is on the hull"
+          },
+          "purpose": "indicates if the subconstruct is on the hull or not"
+        },
+        {
+          "name": "getsubconstructinfo",
+          "inputs": {
+            "subconstructidentifier": {
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          },
+          "outputs": {
+            "type": "blockinfo",
+            "description": "a blockinfo object for the subconstruct active block (the spinblock block the piston or the turret block)"
+          },
+          "purpose": "returns a blockinfo object for the active block of the subconstruct; and invalid blockinfo if the subconstruct hasn't been found"
+        },
+        {
+          "name": "getsubconstructidlerotation",
+          "inputs": {
+            "subconstructidentifier": {
+              "type": "int",
+              "description": "the persistent identifier of the subconstruct"
+            }
+          },
+          "outputs": {
+            "type": "quaternion",
+            "description": "the rotation of the subconstruct relative to its parent as it was first placed"
+          }
+        }
+      ]
+    },
+    "friendlies_api": {
+      "description": "the following api will provide you with the positions of friendly vehicles",
+      "functions": [
+        {
+          "name": "getfriendlycount",
+          "inputs": "n/a",
+          "outputs": {
+            "type": "int",
+            "description": "the number of friendlies spawned into the world"
+          },
+          "purpose": "returns the number of friendly constructs"
+        },
+        {
+          "name": "getfriendlyinfo",
+          "inputs": {
+            "index": {
+              "type": "int",
+              "description": "0 is the first construct"
+            }
+          },
+          "outputs": {
+            "type": "friendlyinfo",
+            "description": "the friendlyinfo object"
+          },
+          "purpose": "returns a friendly info object for a friendly vehicle"
+        },
+        {
+          "name": "getfriendlyinfobyid",
+          "inputs": {
+            "id": {
+              "type": "int",
+              "description": "the id you want"
+            }
+          },
+          "outputs": {
+            "type": "friendlyinfo",
+            "description": "the friendlyinfo object"
+          },
+          "purpose": "returns a friendly info object for an id"
+        }
+      ],
+      "data_structures": {
+        "friendlyinfo": {
+          "properties": {
+            "valid": {
+              "type": "bool",
+              "description": "false if the friendly info could not be retrieved"
+            },
+            "rotation": {
+              "type": "quaternion",
+              "description": "the rotation of the friendly construct"
+            },
+            "referenceposition": {
+              "type": "vector3",
+              "description": "the position of the construct (world east up north frame) from which positivesize and negative size are referenced"
+            },
+            "positivesize": {
+              "type": "vector3",
+              "description": "the extent of the construct in the right,up forwards direction relative to referenceposition"
+            },
+            "centerofmass": {
+              "type": "vector3",
+              "description": "the centre of mass of the construct in world east up north frame"
+            },
+            "velocity": {
+              "type": "vector3",
+              "description": "the velocity of the construct in world east up north frame"
+            },
+            "upvector": {
+              "type": "vector3",
+              "description": "the up vector in world east up north frame"
+            },
+            "rightvector": {
+              "type": "vector3",
+              "description": "the right vector in world east up north frame"
+            },
+            "forwardvector": {
+              "type": "vector3",
+              "description": "the forward vector in world east up north frame"
+            },
+            "healthfraction": {
+              "type": "float",
+              "description": "the fraction of health (including turrets etc)"
+            },
+            "sparesfraction": {
+              "type": "float",
+              "description": "the spares fraction: returns 1 if no spares storage present"
+            },
+            "ammofraction": {
+              "type": "float",
+              "description": "the ammo fraction: returns 1 if no ammo storage present"
+            },
+            "fuelfraction": {
+              "type": "float",
+              "description": "the fuel fraction. returns 1 if no fuel storage present"
+            },
+            "energyfraction": {
+              "type": "float",
+              "description": "the energy fraction: returns 1 if no batteries present"
+            },
+            "powerfraction": {
+              "type": "float",
+              "description": "the power fraction: returns 1 if no fuel storage present"
+            },
+            "electricpowerfraction": {
+              "type": "float",
+              "description": "the electric power fraction: returns 1 if no fuel storage present"
+            },
+            "axisalignedboundingboxminimum": {
+              "type": "vector3",
+              "description": "the world east up north minimum extent of the construct"
+            },
+            "axisalignedboundingboxmaximum": {
+              "type": "vector3",
+              "description": "the world east up north maximum extent of the construct"
+            },
+            "blueprintname": {
+              "type": "string",
+              "description": "the name"
+            },
+            "id": {
+              "type": "int",
+              "description": "the unique id of the construct"
+            }
+          }
+        }
+      }
+    }
+  }
+}
